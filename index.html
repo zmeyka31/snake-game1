@@ -94,13 +94,15 @@
             text-align: center;
         }
 
-        /* Динамическое игровое поле */
+        /* Динамическое игровое поле с фиксом под мобильные */
         #game-board {
             border: 4px solid #ff0055;
             background-color: #12121a;
             box-shadow: 0 0 30px rgba(255, 0, 85, 0.3);
             border-radius: 10px;
-            max-width: 100%; /* Чтобы не вылезало за экраны смартфонов */
+            max-width: 92vw;   /* ЖЕСТКИЙ ФИКС: Чтобы огромный холст сжимался на смартфонах */
+            max-height: 45vh;  /* Не дает карте уползти под геймпад */
+            object-fit: contain; /* Сохраняет квадратные пропорции холста */
             height: auto;
         }
 
@@ -204,6 +206,50 @@
         .buy-btn.bought { background: #505055; cursor: not-allowed; }
         .buy-btn .cost { color: #00ff88; font-size: 11px; }
 
+        /* ПОДВАЛ ДЛЯ РЕЖИМА ЛЕНТЯЯ */
+        .secret-basement {
+            width: 100%;
+            max-width: 280px;
+            background-color: #12121a;
+            border: 4px dashed #ff9f43;
+            box-shadow: 0 0 20px rgba(255, 159, 67, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 25px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .secret-basement h3 {
+            color: #ff9f43;
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+
+        .secret-basement p {
+            color: #8a8ab0;
+            font-size: 12px;
+            margin: 0 0 12px 0;
+        }
+
+        .lazy-btn {
+            background: #ff9f43;
+            color: #0b0b10;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+        }
+
+        .lazy-btn.active {
+            background: #00ff88;
+            box-shadow: 0 0 15px #00ff88;
+        }
+
         /* === 📲 МОБИЛЬНЫЙ ГЕЙМПАД 📲 === */
         #mobile-gamepad {
             display: flex;
@@ -259,20 +305,25 @@
         /* АДАПТИВНОСТЬ ПОД СМАРТФОНЫ */
         @media (max-width: 800px) {
             body {
-                overflow-y: auto; /* Разрешаем вертикальный скролл если экран совсем мелкий */
+                overflow-y: auto; /* Разрешаем вертикальный скролл на мобилках */
             }
             .main-container {
-                flex-direction: column; /* Перестраиваем всё сверху вниз */
+                flex-direction: column; /* Всё в одну колонну */
                 align-items: center;
                 padding: 10px;
             }
             .shop-container {
                 width: 300px;
-                height: 320px; /* Уменьшаем высоту магазина на мобилках */
+                height: 350px;
                 margin-top: 15px;
             }
+            .secret-basement {
+                width: 300px;
+                margin-top: 20px;
+                margin-bottom: 30px; /* Чтобы удобно прожималось в самом низу */
+            }
             #mobile-gamepad {
-                display: flex; /* Жестко показываем на смартфонах */
+                display: flex;
             }
         }
 
@@ -320,25 +371,33 @@
             </div>
         </div>
 
-        <div class="shop-container">
-            <div class="shop-header">
-                LEGEND MAINFRAME
-                <span class="shop-balance">Монеты LEGEND: <span id="coins">0</span></span>
-            </div>
-            
-            <div class="shop-items">
-                <div class="shop-category">Твои скины (Бесплатно)</div>
-                <button class="skin-btn active" onpointerdown="setSkin('neon')"><div class="skin-preview" style="background:#00ff88;"></div> Классический Неон</button>
-                <button class="skin-btn" onpointerdown="setSkin('gold')"><div class="skin-preview" style="background:#ffff00; box-shadow:0 0 10px #ffff00;"></div> Золотая Легенда</button>
-                <button class="skin-btn" onpointerdown="setSkin('rainbow')"><div class="skin-preview" style="background:linear-gradient(45deg, #ff0055, #00ffff);"></div> Кибер-Радуга</button>
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <div class="shop-container">
+                <div class="shop-header">
+                    LEGEND MAINFRAME
+                    <span class="shop-balance">Монеты LEGEND: <span id="coins">0</span></span>
+                </div>
+                
+                <div class="shop-items">
+                    <div class="shop-category">Твои скины (Бесплатно)</div>
+                    <button class="skin-btn active" onpointerdown="setSkin('neon')"><div class="skin-preview" style="background:#00ff88;"></div> Классический Неон</button>
+                    <button class="skin-btn" onpointerdown="setSkin('gold')"><div class="skin-preview" style="background:#ffff00; box-shadow:0 0 10px #ffff00;"></div> Золотая Легенда</button>
+                    <button class="skin-btn" onpointerdown="setSkin('rainbow')"><div class="skin-preview" style="background:linear-gradient(45deg, #ff0055, #00ffff);"></div> Кибер-Радуга</button>
 
-                <div class="shop-category">Магазин Улучшений (За очки)</div>
-                <button class="buy-btn" id="buy-portals" onpointerdown="buyFeature('portals', 1000)">
-                    Режим «Сквозь стены» <span class="cost">🛒 1000</span>
-                </button>
-                <button class="buy-btn" id="buy-slow" onpointerdown="buyFeature('slow', 300)">
-                    Супер-Замедление <span class="cost">🛒 300</span>
-                </button>
+                    <div class="shop-category">Магазин Улучшений (За очки)</div>
+                    <button class="buy-btn" id="buy-portals" onpointerdown="buyFeature('portals', 1000)">
+                        Режим «Сквозь стены» <span class="cost">🛒 1000</span>
+                    </button>
+                    <button class="buy-btn" id="buy-slow" onpointerdown="buyFeature('slow', 300)">
+                        Super-Замедление <span class="cost">🛒 300</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="secret-basement">
+                <h3>🦥 Режим Лентяя 🦥</h3>
+                <p>Читы активированы: стены отключены, скорость снижена, монеты бесконечны!</p>
+                <button id="lazy-mode-btn" class="lazy-btn" onpointerdown="toggleLazyMode()">Активировать чилл</button>
             </div>
         </div>
 
@@ -420,6 +479,8 @@
         let isPaused = false;
         let isPlaying = false;
 
+        let isLazyMode = false; // Глобальный переключатель режима лентяя
+
         let highScore = localStorage.getItem('snake_high_score') || 0;
         let totalCoins = localStorage.getItem('snake_coins') || 0;
         let featurePortals = localStorage.getItem('snake_portals') === 'true';
@@ -464,7 +525,9 @@
             
             isPaused = false;
             isPlaying = true;
-            currentSpeed = speedModifier;
+            
+            // Задаем скорость с учетом Чит-Режима лентяя
+            currentSpeed = isLazyMode ? 180 : speedModifier;
 
             if(gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(updateGame, currentSpeed);
@@ -495,7 +558,8 @@
 
             const head = { x: snake[0].x + dx, y: snake[0].y + dy };
             
-            if (featurePortals) {
+            // ПРОХОД СКВОЗЬ СТЕНЫ (Если включены порталы ИЛИ режим лентяя)
+            if (featurePortals || isLazyMode) {
                 if (head.x < 0) head.x = canvas.width - gridSize;
                 if (head.x >= canvas.width) head.x = 0;
                 if (head.y < 0) head.y = canvas.height - gridSize;
@@ -570,7 +634,6 @@
             return snake.some((part, index) => index !== 0 && part.x === head.x && part.y === head.y);
         }
 
-        // БЕЗОПАСНЫЙ СПАВН ОБЫЧНОГО ЯБЛОКА (ФИКС БАГА 1)
         function resetFood() {
             const tileCountX = canvas.width / gridSize;
             const tileCountY = canvas.height / gridSize;
@@ -590,7 +653,6 @@
             }
         }
 
-        // БЕЗОПАСНЫЙ СПАВН ЗОЛОТОГО ЯБЛОКА (ФИКС БАГА 1)
         function checkGoldSpawn() {
             if (!goldFood && Math.random() < 0.2) {
                 const tileCountX = canvas.width / gridSize;
@@ -659,7 +721,7 @@
                     document.getElementById('buy-portals').innerText = 'Режим «Порталы» Активен!';
                 } else if (feature === 'slow') {
                     speedModifier = 200;
-                    if(isPlaying) {
+                    if(isPlaying && !isLazyMode) {
                         currentSpeed = 200;
                         clearInterval(gameInterval);
                         gameInterval = setInterval(updateGame, currentSpeed);
@@ -669,6 +731,38 @@
                 }
             } else {
                 alert("Маловато монет, Легенда!");
+            }
+        }
+
+        // КНОПКА АКТИВАЦИИ РЕЖИМА ЛЕНТЯЯ
+        function toggleLazyMode() {
+            isLazyMode = !isLazyMode;
+            const btn = document.getElementById('lazy-mode-btn');
+            
+            if(isLazyMode) {
+                btn.innerText = "Чилл АКТИВЕН 😎";
+                btn.classList.add('active');
+                
+                // Наваливаем тонну монет, чтобы разблокировать всё в магазине
+                addCoins(99999);
+                
+                // Если игра идет прямо сейчас, замедляем её на лету
+                if(isPlaying) {
+                    currentSpeed = 180; // Расслабленная скорость
+                    clearInterval(gameInterval);
+                    gameInterval = setInterval(updateGame, currentSpeed);
+                }
+                alert("Режим Лентяя активирован! Стены прозрачны, скорость снижена, на баланс начислено 99к монет!");
+            } else {
+                btn.innerText = "Активировать чилл";
+                btn.classList.remove('active');
+                
+                // Возвращаем стандартную скорость
+                if(isPlaying) {
+                    currentSpeed = speedModifier;
+                    clearInterval(gameInterval);
+                    gameInterval = setInterval(updateGame, currentSpeed);
+                }
             }
         }
 
@@ -707,9 +801,9 @@
             });
         }
 
-        // === 📲 ЛОГИКА УПРАВЛЕНИЯ С ФИ КСОМ САМОУБИЙСТВА (БАГ 2) ===
+        // === 📲 ЛОГИКА УПРАВЛЕНИЯ ===
         function mobileInput(e, dir) {
-            if(e) e.preventDefault(); // Запрещаем дерганье экрана только при тапе на кнопки геймпада
+            if(e) e.preventDefault();
             if (!isPlaying) return;
             
             try { snd.click.cloneNode(true).play(); } catch(err){}
@@ -721,7 +815,6 @@
 
             if (isPaused) return;
 
-            // Блокируем разворот на 180 градусов
             if (dir === 'ArrowUp' && dy === 0) { dx = 0; dy = -gridSize; }
             else if (dir === 'ArrowDown' && dy === 0) { dx = 0; dy = gridSize; }
             else if (dir === 'ArrowLeft' && dx === 0) { dx = -gridSize; dy = 0; }
@@ -735,14 +828,13 @@
             }
             if (isPaused) return;
 
-            // Блокируем разворот на 180 градусов
             if (e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -gridSize; }
             if (e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = gridSize; }
             if (e.key === 'ArrowLeft' && dx === 0) { dx = -gridSize; dy = 0; }
             if (e.key === 'ArrowRight' && dx === 0) { dx = gridSize; dy = 0; }
         });
 
-        // СВАЙПЫ С БЛОКИРОВКОЙ САМОУБИЙСТВА
+        // СВАЙПЫ
         let touchStartX = 0;
         let touchStartY = 0;
 
