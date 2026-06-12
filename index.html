@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LEGEND ULTIMATE ARCADE (PC & MOBILE)</title>
     <style>
         /* Главные настройки интерфейса */
@@ -11,16 +12,17 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
+            overflow-x: hidden;
+            touch-action: none; /* Запрет системных жестов и зума на мобилках */
         }
 
-        /* ИНТЕРАКТИВНЫЙ ЗАДНИЙ ФОН: ВОЛНЫ */
+        /* ИНТЕРАКТИВНЫЙ ЗАДНИЙ ФОН */
         #bg-canvas {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -28,7 +30,7 @@
             z-index: 1;
         }
 
-        /* Тот самый плавный кружок за мышкой (теперь поверх всего) */
+        /* Кружок за мышкой */
         .cursor-follower {
             width: 35px;
             height: 35px;
@@ -36,41 +38,51 @@
             border-radius: 50%;
             position: absolute;
             transform: translate(-50%, -50%);
-            pointer-events: none; /* Мышь кликает СКВОЗЬ круг */
-            z-index: 9999; /* Самый высокий приоритет */
+            pointer-events: none;
+            z-index: 9999;
             box-shadow: 0 0 15px #00ffff, inset 0 0 15px #00ffff;
             animation: colorChange 4s infinite linear;
             left: -100px;
             top: -100px;
         }
 
-        /* Главный контейнер (сближенные элементы игры и магазина) */
+        @media (max-width: 800px) {
+            .cursor-follower { display: none; } /* На смартфонах мыши нет, скрываем */
+        }
+
+        /* Главный контейнер (на ПК в ряд, на мобилках в колонну) */
         .main-container {
             display: flex;
+            flex-direction: row;
             gap: 20px;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             z-index: 10;
             position: relative;
+            padding: 15px;
+            box-sizing: border-box;
+            max-width: 100%;
         }
 
         .game-section {
             display: flex;
             flex-direction: column;
             align-items: center;
+            flex-shrink: 0;
         }
 
         h1 {
             color: #00ff88;
-            font-size: 32px;
+            font-size: 28px;
             margin: 0 0 5px 0;
             text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            text-align: center;
         }
 
         .author-tag {
             color: #ff0055;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 11px;
             letter-spacing: 2px;
             margin-bottom: 5px;
             text-shadow: 0 0 10px rgba(255, 0, 85, 0.4);
@@ -80,6 +92,7 @@
             color: #8a8ab0;
             margin: 0 0 10px 0;
             font-size: 13px;
+            text-align: center;
         }
 
         /* Динамическое игровое поле */
@@ -88,14 +101,15 @@
             background-color: #12121a;
             box-shadow: 0 0 30px rgba(255, 0, 85, 0.3);
             border-radius: 10px;
-            transition: width 0.5s ease, height 0.5s ease;
+            max-width: 100%; /* Чтобы не вылезало за экраны смартфонов */
+            height: auto;
         }
 
         .start-btn {
             background-color: #ff0055;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
@@ -103,9 +117,11 @@
             margin-top: 10px;
             transition: 0.2s;
             z-index: 20;
+            width: 100%;
+            max-width: 300px;
         }
 
-        .start-btn:hover { background-color: #ff3377; transform: scale(1.05); }
+        .start-btn:hover { background-color: #ff3377; transform: scale(1.02); }
 
         /* ПАНЕЛЬ СКИНОВ И МАГАЗИНА */
         .shop-container {
@@ -164,6 +180,7 @@
             transition: 0.2s;
             display: flex;
             align-items: center;
+            width: 100%;
         }
         .skin-btn:hover { border-color: #00ff88; }
         .skin-btn.active { border-color: #ff0055; background: #2a2a40; }
@@ -181,26 +198,28 @@
             justify-content: space-between;
             align-items: center;
             transition: 0.2s;
+            text-align: left;
+            width: 100%;
         }
         .buy-btn:hover { background: #ff3377; }
         .buy-btn.bought { background: #505055; cursor: not-allowed; }
         .buy-btn .cost { color: #00ff88; font-size: 11px; }
 
-        /* === 📲 МОБИЛЬНЫЙ ГЕЙМПАД: КНОПКИ УПРАВЛЕНИЯ 📲 === */
+        /* === 📲 МОБИЛЬНЫЙ ГЕЙМПАД 📲 === */
         #mobile-gamepad {
-            display: flex; /* Показываем на всех экранах (на ПК не мешает) */
+            display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
-            max-width: 400px;
+            max-width: 260px;
             margin-top: 15px;
             z-index: 100;
         }
 
         .gamepad-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
             justify-content: center;
         }
@@ -209,39 +228,58 @@
             background: #12121a;
             border: 3px solid #ff0055;
             color: #ff0055;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
-            padding: 15px;
-            width: 70px;
-            height: 70px;
+            width: 65px;
+            height: 65px;
             border-radius: 15px;
             cursor: pointer;
             transition: 0.1s;
-            box-shadow: 0 0 10px rgba(255, 0, 85, 0.4);
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            user-select: none; /* Не выделять текст */
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .control-btn:active {
             transform: scale(0.9);
             background: rgba(255, 0, 85, 0.2);
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
         }
 
-        /* Кнопка ПАУЗА в мобильном меню */
         #mobile-pause-btn {
             border-color: #00ffff;
             color: #00ffff;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
-            font-size: 16px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+            font-size: 14px;
         }
         #mobile-pause-btn:active { background: rgba(0, 255, 255, 0.2); }
 
-        /* Показываем геймпад только на узких (мобильных) экранах */
-        @media (min-width: 800px) {
-            #mobile-gamepad { display: none; } /* Скрываем на ПК */
+        /* АДАПТИВНОСТЬ ПОД СМАРТФОНЫ */
+        @media (max-width: 800px) {
+            body {
+                overflow-y: auto; /* Разрешаем вертикальный скролл если экран совсем мелкий */
+            }
+            .main-container {
+                flex-direction: column; /* Перестраиваем всё сверху вниз */
+                align-items: center;
+                padding: 10px;
+            }
+            .shop-container {
+                width: 300px;
+                height: 320px; /* Уменьшаем высоту магазина на мобилках */
+                margin-top: 15px;
+            }
+            #mobile-gamepad {
+                display: flex; /* Жестко показываем на смартфонах */
+            }
+        }
+
+        /* Прячем мобильный пульт на больших мониторах */
+        @media (min-width: 801px) {
+            #mobile-gamepad { display: none; }
         }
 
         @keyframes colorChange {
@@ -262,23 +300,23 @@
         <div class="game-section">
             <h1>LEGEND ARCADE</h1>
             <div class="author-tag">EVOLUTION MAPS</div>
-            <p class="info-p">Счёт: <span id="score">0</span> | Рекорд: <span id="high-score">0</span> | Поле: <span id="map-level" style="color: #00ffff; font-weight: bold;">Малое</span></p>
+            <p class="info-p">Счёт: <span id="score">0</span> | Рекорд: <span id="high-score">0</span><br>Поле: <span id="map-level" style="color: #00ffff; font-weight: bold;">Малое</span></p>
 
             <canvas id="game-board" width="300" height="300"></canvas>
 
-            <button class="start-btn" onclick="startGame()">ЗАПУСТИТЬ КАТКУ</button>
+            <button class="start-btn" onpointerdown="startGame()">ЗАПУСТИТЬ КАТКУ</button>
 
             <div id="mobile-gamepad">
                 <div class="gamepad-row">
-                    <button class="control-btn" ontouchstart="mobileInput('ArrowUp')">▲</button>
+                    <button class="control-btn" onpointerdown="mobileInput(event, 'ArrowUp')">▲</button>
                 </div>
                 <div class="gamepad-row">
-                    <button class="control-btn" ontouchstart="mobileInput('ArrowLeft')">◀</button>
-                    <button class="control-btn" id="mobile-pause-btn" ontouchstart="mobileInput('Pause')">Pause</button>
-                    <button class="control-btn" ontouchstart="mobileInput('ArrowRight')">▶</button>
+                    <button class="control-btn" onpointerdown="mobileInput(event, 'ArrowLeft')">◀</button>
+                    <button class="control-btn" id="mobile-pause-btn" onpointerdown="mobileInput(event, 'Pause')">Pause</button>
+                    <button class="control-btn" onpointerdown="mobileInput(event, 'ArrowRight')">▶</button>
                 </div>
                 <div class="gamepad-row">
-                    <button class="control-btn" ontouchstart="mobileInput('ArrowDown')">▼</button>
+                    <button class="control-btn" onpointerdown="mobileInput(event, 'ArrowDown')">▼</button>
                 </div>
             </div>
         </div>
@@ -291,16 +329,16 @@
             
             <div class="shop-items">
                 <div class="shop-category">Твои скины (Бесплатно)</div>
-                <button class="skin-btn active" onclick="setSkin('neon')"><div class="skin-preview" style="background:#00ff88;"></div> Классический Неон</button>
-                <button class="skin-btn" onclick="setSkin('gold')"><div class="skin-preview" style="background:#ffff00; box-shadow:0 0 10px #ffff00;"></div> Золотая Легенда</button>
-                <button class="skin-btn" onclick="setSkin('rainbow')"><div class="skin-preview" style="background:linear-gradient(45deg, #ff0055, #00ffff);"></div> Кибер-Радуга</button>
+                <button class="skin-btn active" onpointerdown="setSkin('neon')"><div class="skin-preview" style="background:#00ff88;"></div> Классический Неон</button>
+                <button class="skin-btn" onpointerdown="setSkin('gold')"><div class="skin-preview" style="background:#ffff00; box-shadow:0 0 10px #ffff00;"></div> Золотая Легенда</button>
+                <button class="skin-btn" onpointerdown="setSkin('rainbow')"><div class="skin-preview" style="background:linear-gradient(45deg, #ff0055, #00ffff);"></div> Кибер-Радуга</button>
 
                 <div class="shop-category">Магазин Улучшений (За очки)</div>
-                <button class="buy-btn" id="buy-portals" onclick="buyFeature('portals', 1000)">
-                    Режим «Сквозь стены» (Порталы) <span class="cost">🛒 1000 LEGEND</span>
+                <button class="buy-btn" id="buy-portals" onpointerdown="buyFeature('portals', 1000)">
+                    Режим «Сквозь стены» <span class="cost">🛒 1000</span>
                 </button>
-                <button class="buy-btn" id="buy-slow" onclick="buyFeature('slow', 300)">
-                    Супер-Замедление (на 1 live) <span class="cost">🛒 300 LEGEND</span>
+                <button class="buy-btn" id="buy-slow" onpointerdown="buyFeature('slow', 300)">
+                    Супер-Замедление <span class="cost">🛒 300</span>
                 </button>
             </div>
         </div>
@@ -308,7 +346,7 @@
     </div>
 
     <script>
-        // === 🌀 ИНТЕРАКТИВНЫЙ ФОН (ТЕПЕРЬ НА ВСЁ ОКНО) 🌀 ===
+        // === 🌀 ИНТЕРАКТИВНЫЙ ФОН 🌀 ===
         const bgCanvas = document.getElementById('bg-canvas');
         const bgCtx = bgCanvas.getContext('2d');
         const follower = document.getElementById('follower');
@@ -317,13 +355,11 @@
         bgCanvas.height = window.innerHeight;
         let ripples = [];
 
-        // Пересчет экрана при изменении окна
         window.addEventListener('resize', () => {
             bgCanvas.width = window.innerWidth;
             bgCanvas.height = window.innerHeight;
         });
 
-        // Слушаем движение мыши ПО ВСЕМУ окну
         window.addEventListener('mousemove', (e) => {
             ripples.push({
                 x: e.clientX,
@@ -353,18 +389,18 @@
         }
         drawBackground();
 
-        // === 🔊 ЗВУКИ 🔊 ===
+        // === 🔊 ЗВУКИ ===
         const snd = {
             eat: new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_145d554a9d.mp3'),
             over: new Audio('https://cdn.pixabay.com/audio/2023/10/01/audio_db6f7b1d9c.mp3'),
             gold: new Audio('https://cdn.pixabay.com/audio/2022/03/19/audio_6e9167c699.mp3'),
             buy: new Audio('https://cdn.pixabay.com/audio/2022/03/13/audio_097f48e9f5.mp3'),
             levelup: new Audio('https://cdn.pixabay.com/audio/2024/02/12/audio_12a3bc4d5e.mp3'),
-            click: new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_73ac97b5e0.mp3') // Клик кнопок
+            click: new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_73ac97b5e0.mp3')
         };
         snd.eat.volume = 0.5; snd.over.volume = 0.6; snd.gold.volume = 0.7; snd.click.volume = 0.2;
 
-        // === 🎮 КОД ИГРЫ ЗМЕЙКА (ДИНАМИЧЕСКИЕ РАЗМЕРЫ) 🎮 ===
+        // === 🎮 КОД ИГРЫ ЗМЕЙКА ===
         const canvas = document.getElementById('game-board');
         const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('score');
@@ -400,7 +436,7 @@
         }
 
         resizeBoard(300, 300);
-        showMenuText('Нажми кнопку для старта');
+        showMenuText('Нажми СТАРТ для игры');
 
         function resizeBoard(w, h) {
             canvas.width = w;
@@ -448,11 +484,11 @@
                 ctx.font = '30px Arial';
                 ctx.textAlign = 'center';
                 ctx.fillText('ПАУЗА', canvas.width / 2, canvas.height / 2);
-                document.getElementById('mobile-pause-btn').innerText = "Play"; // Меняем текст кнопки
+                document.getElementById('mobile-pause-btn').innerText = "Play";
             } else {
                 isPaused = false;
                 gameInterval = setInterval(updateGame, currentSpeed);
-                document.getElementById('mobile-pause-btn').innerText = "Pause"; // Вернуть Pause
+                document.getElementById('mobile-pause-btn').innerText = "Pause";
             }
         }
 
@@ -600,8 +636,8 @@
                         clearInterval(gameInterval);
                         gameInterval = setInterval(updateGame, currentSpeed);
                     }
-                    document.getElementById('buy-slow').innerText = 'Замедление Куплено (на 1 life)';
-                    setTimeout(() => { document.getElementById('buy-slow').innerText = 'Супер-Замедление (на 1 life) 🛒 300 LEGEND' }, 3000)
+                    document.getElementById('buy-slow').innerText = 'Замедление Куплено';
+                    setTimeout(() => { document.getElementById('buy-slow').innerText = 'Супер-Замедление 🛒 300' }, 3000)
                 }
             } else {
                 alert("Маловато монет, Легенда!");
@@ -610,7 +646,7 @@
 
         let currentSkin = localStorage.getItem('snake_skin') || 'neon';
         document.querySelectorAll('.skin-btn').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = document.querySelector(`.skin-btn[onclick="setSkin('${currentSkin}')"]`);
+        const activeBtn = document.querySelector(`.skin-btn[onpointerdown="setSkin('${currentSkin}')"]`);
         if(activeBtn) activeBtn.classList.add('active');
 
         function setSkin(skin) {
@@ -619,7 +655,8 @@
             localStorage.setItem('snake_skin', currentSkin);
             try { snd.buy.cloneNode(true).play(); } catch(e){}
             document.querySelectorAll('.skin-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.skin-btn[onclick="setSkin('${skin}')"]`).classList.add('active');
+            const targetBtn = document.querySelector(`.skin-btn[onpointerdown="setSkin('${skin}')"]`);
+            if(targetBtn) targetBtn.classList.add('active');
             if(isPlaying && !isPaused) drawGame();
         }
 
@@ -642,35 +679,31 @@
             });
         }
 
-        // === 📲 ЛОГИКА УПРАВЛЕНИЯ (ПК И ТЕЛЕФОН) 📲 ===
-        
-        // 1. Код для сенсорных кнопок на экране
-        function mobileInput(dir) {
+        // === 📲 ЛОГИКА УПРАВЛЕНИЯ (ГЕЙМПАД И КЛАВИАТУРА) ===
+        function mobileInput(e, dir) {
+            if(e) e.preventDefault(); // Фикс системного зума и дерганья экрана
             if (!isPlaying) return;
             
-            snd.click.cloneNode(true).play(); // Звук клика
+            try { snd.click.cloneNode(true).play(); } catch(err){}
 
             if (dir === 'Pause') {
                 togglePause();
                 return;
             }
 
-            if (isPaused) return; // На паузе рулить нельзя
+            if (isPaused) return;
 
-            // Логика поворота (запрет разворота на 180)
             if (dir === 'ArrowUp' && dy === 0) { dx = 0; dy = -gridSize; }
             else if (dir === 'ArrowDown' && dy === 0) { dx = 0; dy = gridSize; }
             else if (dir === 'ArrowLeft' && dx === 0) { dx = -gridSize; dy = 0; }
             else if (dir === 'ArrowRight' && dx === 0) { dx = gridSize; dy = 0; }
         }
 
-        // 2. Код для клавиш на ПК
         document.addEventListener('keydown', (e) => {
             if (e.key === ' ' || e.code === 'Space') {
-                e.preventDefault(); // Запрет скролла
+                e.preventDefault();
                 togglePause();
             }
-
             if (isPaused) return;
 
             if (e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -gridSize; }
@@ -678,6 +711,38 @@
             if (e.key === 'ArrowLeft' && dx === 0) { dx = -gridSize; dy = 0; }
             if (e.key === 'ArrowRight' && dx === 0) { dx = gridSize; dy = 0; }
         });
+
+        // === 👆 СВАЙПЫ ДЛЯ СМАРТФОНОВ (ДОПОЛНИТЕЛЬНОЕ УПРАВЛЕНИЕ) 👆 ===
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            if (!isPlaying || isPaused) return;
+
+            let touchEndX = e.changedTouches[0].screenX;
+            let touchEndY = e.changedTouches[0].screenY;
+
+            let xDiff = touchEndX - touchStartX;
+            let yDiff = touchEndY - touchStartY;
+
+            // Определяем, в какую сторону был свайп (по горизонтали или вертикали)
+            if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                if (Math.abs(xDiff) > 30) { // Минимальная дистанция свайпа
+                    if (xDiff > 0 && dx === 0) { dx = gridSize; dy = 0; } // Свайп вправо
+                    else if (xDiff < 0 && dx === 0) { dx = -gridSize; dy = 0; } // Свайп влево
+                }
+            } else {
+                if (Math.abs(yDiff) > 30) {
+                    if (yDiff > 0 && dy === 0) { dx = 0; dy = gridSize; } // Свайп вниз
+                    else if (yDiff < 0 && dy === 0) { dx = 0; dy = -gridSize; } // Свайп вверх
+                }
+            }
+        }, { passive: true });
     </script>
 </body>
 </html>
