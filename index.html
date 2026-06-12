@@ -17,7 +17,6 @@
             justify-content: center;
             min-height: 100vh;
             overflow-x: hidden;
-            touch-action: none; /* Запрет системных жестов и зума на мобилках */
         }
 
         /* ИНТЕРАКТИВНЫЙ ЗАДНИЙ ФОН */
@@ -466,7 +465,6 @@
             isPaused = false;
             isPlaying = true;
             currentSpeed = speedModifier;
-            speedModifier = 100;
 
             if(gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(updateGame, currentSpeed);
@@ -572,21 +570,51 @@
             return snake.some((part, index) => index !== 0 && part.x === head.x && part.y === head.y);
         }
 
+        // БЕЗОПАСНЫЙ СПАВН ОБЫЧНОГО ЯБЛОКА (ФИКС БАГА 1)
         function resetFood() {
             const tileCountX = canvas.width / gridSize;
             const tileCountY = canvas.height / gridSize;
-            food.x = Math.floor(Math.random() * (tileCountX - 4) + 2) * gridSize;
-            food.y = Math.floor(Math.random() * (tileCountY - 4) + 2) * gridSize;
+            let validPosition = false;
+
+            while (!validPosition) {
+                food.x = Math.floor(Math.random() * (tileCountX - 4) + 2) * gridSize;
+                food.y = Math.floor(Math.random() * (tileCountY - 4) + 2) * gridSize;
+                
+                validPosition = true;
+                for (let part of snake) {
+                    if (part.x === food.x && part.y === food.y) {
+                        validPosition = false;
+                        break;
+                    }
+                }
+            }
         }
 
+        // БЕЗОПАСНЫЙ СПАВН ЗОЛОТОГО ЯБЛОКА (ФИКС БАГА 1)
         function checkGoldSpawn() {
             if (!goldFood && Math.random() < 0.2) {
                 const tileCountX = canvas.width / gridSize;
                 const tileCountY = canvas.height / gridSize;
-                goldFood = {
-                    x: Math.floor(Math.random() * (tileCountX - 4) + 2) * gridSize,
-                    y: Math.floor(Math.random() * (tileCountY - 4) + 2) * gridSize
-                };
+                let validPosition = false;
+                let tempGold = {x: 0, y: 0};
+
+                while (!validPosition) {
+                    tempGold.x = Math.floor(Math.random() * (tileCountX - 4) + 2) * gridSize;
+                    tempGold.y = Math.floor(Math.random() * (tileCountY - 4) + 2) * gridSize;
+                    
+                    validPosition = true;
+                    if (tempGold.x === food.x && tempGold.y === food.y) {
+                        validPosition = false;
+                    }
+                    for (let part of snake) {
+                        if (part.x === tempGold.x && part.y === tempGold.y) {
+                            validPosition = false;
+                            break;
+                        }
+                    }
+                }
+
+                goldFood = tempGold;
                 try { snd.gold.play(); } catch(e){}
                 goldFoodTimer = setTimeout(() => { goldFood = null; }, 7000);
             }
@@ -679,9 +707,9 @@
             });
         }
 
-        // === 📲 ЛОГИКА УПРАВЛЕНИЯ (ГЕЙМПАД И КЛАВИАТУРА) ===
+        // === 📲 ЛОГИКА УПРАВЛЕНИЯ С ФИ КСОМ САМОУБИЙСТВА (БАГ 2) ===
         function mobileInput(e, dir) {
-            if(e) e.preventDefault(); // Фикс системного зума и дерганья экрана
+            if(e) e.preventDefault(); // Запрещаем дерганье экрана только при тапе на кнопки геймпада
             if (!isPlaying) return;
             
             try { snd.click.cloneNode(true).play(); } catch(err){}
@@ -693,6 +721,7 @@
 
             if (isPaused) return;
 
+            // Блокируем разворот на 180 градусов
             if (dir === 'ArrowUp' && dy === 0) { dx = 0; dy = -gridSize; }
             else if (dir === 'ArrowDown' && dy === 0) { dx = 0; dy = gridSize; }
             else if (dir === 'ArrowLeft' && dx === 0) { dx = -gridSize; dy = 0; }
@@ -706,13 +735,14 @@
             }
             if (isPaused) return;
 
+            // Блокируем разворот на 180 градусов
             if (e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -gridSize; }
             if (e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = gridSize; }
             if (e.key === 'ArrowLeft' && dx === 0) { dx = -gridSize; dy = 0; }
             if (e.key === 'ArrowRight' && dx === 0) { dx = gridSize; dy = 0; }
         });
 
-        // === 👆 СВАЙПЫ ДЛЯ СМАРТФОНОВ (ДОПОЛНИТЕЛЬНОЕ УПРАВЛЕНИЕ) 👆 ===
+        // СВАЙПЫ С БЛОКИРОВКОЙ САМОУБИЙСТВА
         let touchStartX = 0;
         let touchStartY = 0;
 
@@ -730,16 +760,15 @@
             let xDiff = touchEndX - touchStartX;
             let yDiff = touchEndY - touchStartY;
 
-            // Определяем, в какую сторону был свайп (по горизонтали или вертикали)
             if (Math.abs(xDiff) > Math.abs(yDiff)) {
-                if (Math.abs(xDiff) > 30) { // Минимальная дистанция свайпа
-                    if (xDiff > 0 && dx === 0) { dx = gridSize; dy = 0; } // Свайп вправо
-                    else if (xDiff < 0 && dx === 0) { dx = -gridSize; dy = 0; } // Свайп влево
+                if (Math.abs(xDiff) > 30) {
+                    if (xDiff > 0 && dx === 0) { dx = gridSize; dy = 0; } 
+                    else if (xDiff < 0 && dx === 0) { dx = -gridSize; dy = 0; } 
                 }
             } else {
                 if (Math.abs(yDiff) > 30) {
-                    if (yDiff > 0 && dy === 0) { dx = 0; dy = gridSize; } // Свайп вниз
-                    else if (yDiff < 0 && dy === 0) { dx = 0; dy = -gridSize; } // Свайп вверх
+                    if (yDiff > 0 && dy === 0) { dx = 0; dy = gridSize; } 
+                    else if (yDiff < 0 && dy === 0) { dx = 0; dy = -gridSize; } 
                 }
             }
         }, { passive: true });
