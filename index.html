@@ -46,10 +46,50 @@
         }
 
         @media (max-width: 800px) {
-            .cursor-follower { display: none; } /* На смартфонах мыши нет, скрываем */
+            .cursor-follower { display: none; }
         }
 
-        /* Главный контейнер (на ПК в ряд, на мобилках в колонну) */
+        /* === 👤 ВИДЖЕТ ПРОФИЛЯ В УГЛУ (Пункт 5) === */
+        .profile-widget {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 110;
+            background: #12121a;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+        }
+        .profile-widget:hover {
+            transform: scale(1.05);
+            border-color: #ff0055;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
+        }
+        .widget-avatar {
+            width: 30px;
+            height: 30px;
+            background: #1f1f30;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: 1px solid #444;
+        }
+        .widget-burger {
+            color: #00ffff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Главный контейнер */
         .main-container {
             display: flex;
             flex-direction: row;
@@ -61,6 +101,7 @@
             padding: 15px;
             box-sizing: border-box;
             max-width: 100%;
+            margin-top: 50px; /* Отступ под виджет */
         }
 
         .game-section {
@@ -94,15 +135,14 @@
             text-align: center;
         }
 
-        /* Динамическое игровое поле с фиксом под мобильные */
         #game-board {
             border: 4px solid #ff0055;
             background-color: #12121a;
             box-shadow: 0 0 30px rgba(255, 0, 85, 0.3);
             border-radius: 10px;
-            max-width: 92vw;   /* ЖЕСТКИЙ ФИКС: Чтобы огромный холст сжимался на смартфонах */
-            max-height: 45vh;  /* Не дает карте уползти под геймпад */
-            object-fit: contain; /* Сохраняет квадратные пропорции холста */
+            max-width: 92vw;
+            max-height: 45vh;
+            object-fit: contain;
             height: auto;
         }
 
@@ -121,7 +161,6 @@
             width: 100%;
             max-width: 300px;
         }
-
         .start-btn:hover { background-color: #ff3377; transform: scale(1.02); }
 
         /* ПАНЕЛЬ СКИНОВ И МАГАЗИНА */
@@ -183,8 +222,9 @@
             align-items: center;
             width: 100%;
         }
-        .skin-btn:hover { border-color: #00ff88; }
+        .skin-btn:hover:not(.locked-skin) { border-color: #00ff88; }
         .skin-btn.active { border-color: #ff0055; background: #2a2a40; }
+        .skin-btn.locked-skin { background: #151520; color: #555; border-color: #222; cursor: not-allowed; }
         .skin-preview { width: 15px; height: 15px; border-radius: 2px; margin-right: 10px; }
 
         .buy-btn {
@@ -203,7 +243,7 @@
             width: 100%;
         }
         .buy-btn:hover { background: #ff3377; }
-        .buy-btn.bought { background: #505055; cursor: not-allowed; }
+        .buy-btn.bought { background: #505055; cursor: not-allowed; border: 1px solid #777; }
         .buy-btn .cost { color: #00ff88; font-size: 11px; }
 
         /* ПОДВАЛ ДЛЯ РЕЖИМА ЛЕНТЯЯ */
@@ -244,11 +284,7 @@
             transition: 0.2s;
             width: 100%;
         }
-
-        .lazy-btn.active {
-            background: #00ff88;
-            box-shadow: 0 0 15px #00ff88;
-        }
+        .lazy-btn.active { background: #00ff88; box-shadow: 0 0 15px #00ff88; }
 
         /* === 📲 МОБИЛЬНЫЙ ГЕЙМПАД 📲 === */
         #mobile-gamepad {
@@ -287,7 +323,6 @@
             user-select: none;
             -webkit-user-select: none;
         }
-
         .control-btn:active {
             transform: scale(0.9);
             background: rgba(255, 0, 85, 0.2);
@@ -302,32 +337,181 @@
         }
         #mobile-pause-btn:active { background: rgba(0, 255, 255, 0.2); }
 
-        /* АДАПТИВНОСТЬ ПОД СМАРТФОНЫ */
-        @media (max-width: 800px) {
-            body {
-                overflow-y: auto; /* Разрешаем вертикальный скролл на мобилках */
-            }
-            .main-container {
-                flex-direction: column; /* Всё в одну колонну */
-                align-items: center;
-                padding: 10px;
-            }
-            .shop-container {
-                width: 300px;
-                height: 350px;
-                margin-top: 15px;
-            }
-            .secret-basement {
-                width: 300px;
-                margin-top: 20px;
-                margin-bottom: 30px; /* Чтобы удобно прожималось в самом низу */
-            }
-            #mobile-gamepad {
-                display: flex;
-            }
+        /* === 🚨 ОКНА МОДАЛОК (ПРОФИЛЬ, АЧИВКИ, СМАЙЛЫ, ПРАНК) 🚨 === */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 10, 0.85);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-window {
+            background: #12121a;
+            border: 3px solid #00ffff;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 360px;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Прячем мобильный пульт на больших мониторах */
+        .modal-close {
+            position: absolute;
+            top: 10px; right: 12px;
+            color: #8a8ab0;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .modal-close:hover { color: #ff0055; }
+
+        /* Стили внутренностей профиля */
+        .profile-big-avatar {
+            width: 80px;
+            height: 80px;
+            background: #1f1f30;
+            border: 3px dashed #00ffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 45px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .profile-big-avatar:hover {
+            transform: rotate(15deg) scale(1.05);
+            border-color: #ff0055;
+        }
+        .avatar-hint {
+            font-size: 11px;
+            color: #505055;
+            margin-bottom: 15px;
+        }
+        .profile-stats {
+            width: 100%;
+            background: #1a1a26;
+            border-radius: 6px;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+        .profile-stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        /* Кнопки меню профиля */
+        .menu-btn {
+            width: 100%;
+            background: #ff0055;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: 0.2s;
+        }
+        .menu-btn:hover { background: #ff3377; }
+        
+        .reset-btn {
+            background: #301015;
+            border: 1px solid #ff0055;
+            color: #ff5577;
+            font-size: 12px;
+        }
+        .reset-btn:hover { background: #ff0055; color: white; }
+
+        /* Сетка выбора смайлов (Пункт 6) */
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+            width: 100%;
+            padding: 5px;
+        }
+        .emoji-item {
+            font-size: 24px;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            transition: 0.1s;
+            padding: 4px;
+            border-radius: 6px;
+        }
+        .emoji-item:hover { background: #2a2a40; transform: scale(1.2); }
+
+        /* Список ачивок (Пункт 7) */
+        .achievements-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .ach-card {
+            background: #1a1a26;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            position: relative;
+            transition: 0.2s;
+        }
+        /* Серый фильтр для закрытых ачивок */
+        .ach-card.locked {
+            filter: grayscale(100%) opacity(35%);
+        }
+        .ach-card.unlocked {
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
+        }
+        .ach-title { font-weight: bold; font-size: 14px; color: #00ff88; }
+        .ach-desc { font-size: 11px; color: #8a8ab0; }
+        .ach-status { position: absolute; top: 8px; right: 12px; font-size: 14px; }
+
+        /* ПРАНК БАННЕР (Пункт 3) */
+        .prank-window {
+            background: #050508;
+            border: 3px solid #ff0055;
+            box-shadow: 0 0 50px rgba(255, 0, 85, 0.5);
+            text-align: center;
+            max-width: 400px;
+        }
+        .prank-title { color: #ff0055; font-size: 20px; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px; }
+        .prank-text { color: #aaaaaa; font-family: monospace; font-size: 13px; line-height: 1.6; margin-bottom: 20px; text-align: left; background: #0c0c12; padding: 12px; border-radius: 4px; border: 1px solid #222; }
+        .prank-timer { color: #ff0055; font-weight: bold; font-size: 18px; margin-bottom: 15px; }
+
+        /* АДАПТИВНОСТЬ */
+        @media (max-width: 800px) {
+            body { overflow-y: auto; }
+            .main-container { flex-direction: column; align-items: center; padding: 10px; }
+            .shop-container { width: 300px; height: 350px; margin-top: 15px; }
+            .secret-basement { width: 300px; margin-top: 20px; margin-bottom: 30px; }
+            #mobile-gamepad { display: flex; }
+        }
+
         @media (min-width: 801px) {
             #mobile-gamepad { display: none; }
         }
@@ -345,8 +529,12 @@
     <canvas id="bg-canvas"></canvas>
     <div class="cursor-follower" id="follower"></div>
 
-    <div class="main-container">
+    <div class="profile-widget" onpointerdown="openModal('profile-modal')">
+        <div class="widget-avatar" id="widget-avatar-icon">😀</div>
+        <div class="widget-burger">☰</div>
+    </div>
 
+    <div class="main-container">
         <div class="game-section">
             <h1>LEGEND ARCADE</h1>
             <div class="author-tag">EVOLUTION MAPS</div>
@@ -380,9 +568,13 @@
                 
                 <div class="shop-items">
                     <div class="shop-category">Твои скины (Бесплатно)</div>
-                    <button class="skin-btn active" onpointerdown="setSkin('neon')"><div class="skin-preview" style="background:#00ff88;"></div> Классический Неон</button>
-                    <button class="skin-btn" onpointerdown="setSkin('gold')"><div class="skin-preview" style="background:#ffff00; box-shadow:0 0 10px #ffff00;"></div> Золотая Легенда</button>
-                    <button class="skin-btn" onpointerdown="setSkin('rainbow')"><div class="skin-preview" style="background:linear-gradient(45deg, #ff0055, #00ffff);"></div> Кибер-Радуга</button>
+                    <button class="skin-btn active" id="skin-neon" onpointerdown="setSkin('neon')"><div class="skin-preview" style="background:#00ff88;"></div> Классический Неон</button>
+                    <button class="skin-btn" id="skin-gold" onpointerdown="setSkin('gold')"><div class="skin-preview" style="background:#ffff00; box-shadow:0 0 10px #ffff00;"></div> Золотая Легенда</button>
+                    <button class="skin-btn" id="skin-rainbow" onpointerdown="setSkin('rainbow')"><div class="skin-preview" style="background:linear-gradient(45deg, #ff0055, #00ffff);"></div> Кибер-Радуга</button>
+
+                    <button class="skin-btn locked-skin" id="skin-hellfire" onpointerdown="setSkin('hellfire')">
+                        <div class="skin-preview" style="background:linear-gradient(0deg, #ff0000, #ffaa00);"></div> 🔒 Адское Пламя (1200 очков)
+                    </button>
 
                     <div class="shop-category">Магазин Улучшений (За очки)</div>
                     <button class="buy-btn" id="buy-portals" onpointerdown="buyFeature('portals', 1000)">
@@ -390,6 +582,14 @@
                     </button>
                     <button class="buy-btn" id="buy-slow" onpointerdown="buyFeature('slow', 300)">
                         Super-Замедление <span class="cost">🛒 300</span>
+                    </button>
+
+                    <div class="shop-category">Эксклюзивные услуги</div>
+                    <button class="buy-btn" id="buy-anti-ip" onpointerdown="buyAntiIP()">
+                        Забуду ваш IP <span class="cost" id="anti-ip-cost">🛒 5000</span>
+                    </button>
+                    <button class="buy-btn" id="buy-donate" onpointerdown="buyDonate()">
+                        Поддержать автора <span class="cost">🛒 1000</span>
                     </button>
                 </div>
             </div>
@@ -400,7 +600,77 @@
                 <button id="lazy-mode-btn" class="lazy-btn" onpointerdown="toggleLazyMode()">Активировать чилл</button>
             </div>
         </div>
+    </div>
 
+    <div class="modal-overlay" id="profile-modal">
+        <div class="modal-window">
+            <div class="modal-close" onpointerdown="closeModal('profile-modal')">×</div>
+            <h2>ТВОЙ ПРОФИЛЬ</h2>
+            <div class="profile-big-avatar" id="profile-avatar-render" onpointerdown="switchModal('profile-modal', 'emoji-modal')">😀</div>
+            <div class="avatar-hint">Кликни на смайлик, чтобы изменить</div>
+            
+            <div class="profile-stats">
+                <div class="profile-stat-row"><span>Монеты:</span><span id="prof-coins" style="color:#00ff88;">0</span></div>
+                <div class="profile-stat-row"><span>Лучший рекорд:</span><span id="prof-record" style="color:#00ffff;">0</span></div>
+            </div>
+
+            <button class="menu-btn" onpointerdown="switchModal('profile-modal', 'achievements-modal')">🏆 ДОСТИЖЕНИЯ</button>
+            <button class="menu-btn reset-btn" onpointerdown="triggerTotalReset()">⚠️ ТОТАЛЬНЫЙ СБРОС</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="emoji-modal">
+        <div class="modal-window">
+            <div class="modal-close" onpointerdown="switchModal('emoji-modal', 'profile-modal')">←</div>
+            <h2>ВЫБЕРИ АВАТАРКУ</h2>
+            <div class="emoji-grid" id="emoji-container">
+                </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="achievements-modal">
+        <div class="modal-window">
+            <div class="modal-close" onpointerdown="switchModal('achievements-modal', 'profile-modal')">←</div>
+            <h2>ДОСТИЖЕНИЯ</h2>
+            <div class="achievements-list">
+                <div class="ach-card locked" id="ach-step">
+                    <div class="ach-title">🥇 Первый шаг</div>
+                    <div class="ach-desc">Набрать свои первые 50 очков.</div>
+                    <div class="ach-status" id="ach-step-status">❌</div>
+                </div>
+                <div class="ach-card locked" id="ach-businessman">
+                    <div class="ach-title">💰 Бизнесмен</div>
+                    <div class="ach-desc">Купить любой товар в магазине.</div>
+                    <div class="ach-status" id="ach-businessman-status">❌</div>
+                </div>
+                <div class="ach-card locked" id="ach-agent">
+                    <div class="ach-title">🕵️‍♂️ Секретный Агент</div>
+                    <div class="ach-desc">Купить товар «Забуду ваш IP» за 5000 монет.</div>
+                    <div class="ach-status" id="ach-agent-status">❌</div>
+                </div>
+                <div class="ach-card locked" id="ach-dragon">
+                    <div class="ach-title">🔥 Повелитель Драконов</div>
+                    <div class="ach-desc">Набрать 1200 очков в одной катке. Награда: скин.</div>
+                    <div class="ach-status" id="ach-dragon-status">❌</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="prank-modal">
+        <div class="modal-window prank-window">
+            <div class="prank-title">СИСТЕМА БЕЗОПАСНОСТИ РЕПОЗИТОРИЯ</div>
+            <div class="prank-text">
+                Предупреждение: Обнаружено несанкционированное подключение.<br>
+                Протокол передачи данных: WebSocket.Успешно.<br>
+                Статус: Спасибо, теперь у меня есть твой IP...<br>
+                Логирование сессии сохранено на удаленном сервере.
+            </div>
+            <div class="prank-timer" id="prank-timer-text">Осталось: 30 сек.</div>
+            <button class="menu-btn" id="prank-close-btn" disabled style="background:#555; cursor:not-allowed;" onpointerdown="closePrankBanner()">
+                Спасибо, теперь у меня есть твой IP
+            </button>
+        </div>
     </div>
 
     <script>
@@ -478,21 +748,37 @@
         let gameInterval = null;
         let isPaused = false;
         let isPlaying = false;
+        let isLazyMode = false;
 
-        let isLazyMode = false; // Глобальный переключатель режима лентяя
-
-        let highScore = localStorage.getItem('snake_high_score') || 0;
-        let totalCoins = localStorage.getItem('snake_coins') || 0;
+        // Загрузка базовых данных из локального хранилища
+        let highScore = parseInt(localStorage.getItem('snake_high_score')) || 0;
+        let totalCoins = parseInt(localStorage.getItem('snake_coins')) || 0;
         let featurePortals = localStorage.getItem('snake_portals') === 'true';
         let speedModifier = 100;
         let currentSpeed = 100;
+
+        // Новые переменные из ТЗ
+        let currentSkin = localStorage.getItem('snake_skin') || 'neon';
+        let userEmoji = localStorage.getItem('snake_user_emoji') || '😀';
+        let isAntiIPBought = localStorage.getItem('snake_anti_ip') === 'true';
+        
+        // Переменные достижений
+        let achFirstStep = localStorage.getItem('ach_step') === 'true';
+        let achBusinessman = localStorage.getItem('ach_businessman') === 'true';
+        let achAgent = localStorage.getItem('ach_agent') === 'true';
+        let achDragon = localStorage.getItem('ach_dragon') === 'true';
+
+        // Список разрешенных смайликов по ТЗ
+        const allowedEmojis = [
+            '😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','🫠','😉','😊','😇','🥰','😍','🤩','😘','😗','☺️','😚','😙','🥲','😋','😛','😜','🤪','😝','E','🤑','🤗','🤭','🫢','🫣','🤫','🤔','🫡','🤐','🤨','😐','😑','😶','🫥','😶‍🌫️','😏','😒','🙄','😬','😮‍💨','🤥','🫨','😌','😔','😪','🤤','😷','🤒','😵','😵‍💫','🤕','🤢','🤯','🤠','🤮','🤧','🥳','🥸','🥵','🥶','😎','🤓','🥴','🧐','😲','😥','😢','😳','😕','🫤','🥺','😭','😱','🥹','😟','🙁','😦','😖','😣','😧','☹️','😮','😨','😞','😓','😰','😯','😩','😫','🥱','😤','😡','😠','🤬','😈','👿','🤡','💫','💥'
+        ];
 
         highScoreElement.innerText = highScore;
         coinsElement.innerText = totalCoins;
         
         if(featurePortals) { 
             document.getElementById('buy-portals').classList.add('bought'); 
-            document.getElementById('buy-portals').innerText = 'Режим «Порталы» Активен!'; 
+            document.getElementById('buy-portals').innerHTML = 'Режим «Порталы» Активен!'; 
         }
 
         resizeBoard(300, 300);
@@ -526,7 +812,6 @@
             isPaused = false;
             isPlaying = true;
             
-            // Задаем скорость с учетом Чит-Режима лентяя
             currentSpeed = isLazyMode ? 180 : speedModifier;
 
             if(gameInterval) clearInterval(gameInterval);
@@ -558,7 +843,6 @@
 
             const head = { x: snake[0].x + dx, y: snake[0].y + dy };
             
-            // ПРОХОД СКВОЗЬ СТЕНЫ (Если включены порталы ИЛИ режим лентяя)
             if (featurePortals || isLazyMode) {
                 if (head.x < 0) head.x = canvas.width - gridSize;
                 if (head.x >= canvas.width) head.x = 0;
@@ -576,6 +860,22 @@
                 score += 10;
                 scoreElement.innerText = score;
                 snd.eat.cloneNode(true).play();
+                
+                // Проверка легкой ачивки на 50 очков
+                if(score >= 50 && !achFirstStep) {
+                    achFirstStep = true;
+                    localStorage.setItem('ach_step', 'true');
+                    updateAchievementsUI();
+                }
+
+                // Проверка хардкорной ачивки на 1200 очков
+                if(score >= 1200 && !achDragon) {
+                    achDragon = true;
+                    localStorage.setItem('ach_dragon', 'true');
+                    updateAchievementsUI();
+                    unlockHellfireSkin();
+                }
+
                 resetFood();
                 checkGoldSpawn();
                 checkMapEvolution();
@@ -586,6 +886,14 @@
                 snd.gold.play();
                 goldFood = null;
                 clearTimeout(goldFoodTimer);
+
+                if(score >= 1200 && !achDragon) {
+                    achDragon = true;
+                    localStorage.setItem('ach_dragon', 'true');
+                    updateAchievementsUI();
+                    unlockHellfireSkin();
+                }
+
                 checkMapEvolution();
             }
             else {
@@ -700,13 +1008,29 @@
                 highScore = score;
                 highScoreElement.innerText = highScore;
                 localStorage.setItem('snake_high_score', highScore);
+                // Если побили рекорд до 1200 на лету при смерти
+                if(highScore >= 1200 && !achDragon) {
+                    achDragon = true;
+                    localStorage.setItem('ach_dragon', 'true');
+                    unlockHellfireSkin();
+                }
             }
+            updateAchievementsUI();
         }
 
         function addCoins(amount) {
             totalCoins = parseInt(totalCoins) + amount;
             coinsElement.innerText = totalCoins;
             localStorage.setItem('snake_coins', totalCoins);
+            updateProfileDOM();
+        }
+
+        function checkBusinessAchievement() {
+            if(!achBusinessman) {
+                achBusinessman = true;
+                localStorage.setItem('ach_businessman', 'true');
+                updateAchievementsUI();
+            }
         }
 
         function buyFeature(feature, cost) {
@@ -714,11 +1038,13 @@
             if (totalCoins >= cost) {
                 addCoins(-cost);
                 try { snd.buy.play(); } catch(e){}
+                checkBusinessAchievement();
+
                 if (feature === 'portals') {
                     featurePortals = true;
                     localStorage.setItem('snake_portals', 'true');
                     document.getElementById('buy-portals').classList.add('bought');
-                    document.getElementById('buy-portals').innerText = 'Режим «Порталы» Активен!';
+                    document.getElementById('buy-portals').innerHTML = 'Режим «Порталы» Активен!';
                 } else if (feature === 'slow') {
                     speedModifier = 200;
                     if(isPlaying && !isLazyMode) {
@@ -726,11 +1052,58 @@
                         clearInterval(gameInterval);
                         gameInterval = setInterval(updateGame, currentSpeed);
                     }
-                    document.getElementById('buy-slow').innerText = 'Замедление Куплено';
-                    setTimeout(() => { document.getElementById('buy-slow').innerText = 'Супер-Замедление 🛒 300' }, 3000)
+                    document.getElementById('buy-slow').innerHTML = 'Замедление Куплено';
+                    setTimeout(() => { document.getElementById('buy-slow').innerHTML = 'Супер-Замедление <span class="cost">🛒 300</span>' }, 3000)
                 }
             } else {
                 alert("Маловато монет, Легенда!");
+            }
+        }
+
+        // === ПУНКТ 4: ТОВАР «ЗАБУДУ ВАШ IP» ===
+        function buyAntiIP() {
+            if(isAntiIPBought) return;
+            if (totalCoins >= 5000) {
+                addCoins(-5000);
+                try { snd.buy.play(); } catch(e){}
+                
+                isAntiIPBought = true;
+                localStorage.setItem('snake_anti_ip', 'true');
+                
+                achAgent = true;
+                localStorage.setItem('ach_agent', 'true');
+                
+                checkBusinessAchievement();
+                updateAchievementsUI();
+                updateShopButtons();
+                alert("Успешно! База данных стёрта, баннер больше не появится.");
+            } else {
+                alert("Недостаточно монет! Защита стоит 5000 монет.");
+            }
+        }
+
+        // === ПУНКТ 2: БЕСКОНЕЧНЫЙ ДОНАТ ЗА 1000 МОНЕТ ===
+        function buyDonate() {
+            if (totalCoins >= 1000) {
+                if(confirm("Точно хочешь пожертвовать 1000 монет автору?")) {
+                    addCoins(-1000);
+                    try { snd.levelup.play(); } catch(e){}
+                    checkBusinessAchievement();
+                    alert("Спасибо за поддержку легендарной разработки! ❤️");
+                }
+            } else {
+                alert("У тебя нет 1000 монет для доната!");
+            }
+        }
+
+        function updateShopButtons() {
+            const btn = document.getElementById('buy-anti-ip');
+            if(isAntiIPBought) {
+                btn.classList.add('bought');
+                btn.innerHTML = 'Куплено (IP стёрт)';
+            } else {
+                btn.classList.remove('bought');
+                btn.innerHTML = 'Забуду ваш IP <span class="cost" id="anti-ip-cost">🛒 5000</span>';
             }
         }
 
@@ -742,13 +1115,10 @@
             if(isLazyMode) {
                 btn.innerText = "Чилл АКТИВЕН 😎";
                 btn.classList.add('active');
-                
-                // Наваливаем тонну монет, чтобы разблокировать всё в магазине
                 addCoins(99999);
                 
-                // Если игра идет прямо сейчас, замедляем её на лету
                 if(isPlaying) {
-                    currentSpeed = 180; // Расслабленная скорость
+                    currentSpeed = 180;
                     clearInterval(gameInterval);
                     gameInterval = setInterval(updateGame, currentSpeed);
                 }
@@ -757,7 +1127,6 @@
                 btn.innerText = "Активировать чилл";
                 btn.classList.remove('active');
                 
-                // Возвращаем стандартную скорость
                 if(isPlaying) {
                     currentSpeed = speedModifier;
                     clearInterval(gameInterval);
@@ -766,20 +1135,26 @@
             }
         }
 
-        let currentSkin = localStorage.getItem('snake_skin') || 'neon';
-        document.querySelectorAll('.skin-btn').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = document.querySelector(`.skin-btn[onpointerdown="setSkin('${currentSkin}')"]`);
-        if(activeBtn) activeBtn.classList.add('active');
-
         function setSkin(skin) {
+            if (skin === 'hellfire' && !achDragon) {
+                alert("Скин заблокирован! Набери 1200 очков, чтобы открыть его.");
+                return;
+            }
             if (skin === currentSkin) return;
             currentSkin = skin;
             localStorage.setItem('snake_skin', currentSkin);
             try { snd.buy.cloneNode(true).play(); } catch(e){}
+            
             document.querySelectorAll('.skin-btn').forEach(btn => btn.classList.remove('active'));
-            const targetBtn = document.querySelector(`.skin-btn[onpointerdown="setSkin('${skin}')"]`);
-            if(targetBtn) targetBtn.classList.add('active');
+            document.getElementById(`skin-${skin}`).classList.add('active');
+            
             if(isPlaying && !isPaused) drawGame();
+        }
+
+        function unlockHellfireSkin() {
+            const btn = document.getElementById('skin-hellfire');
+            btn.classList.remove('locked-skin');
+            btn.innerHTML = '<div class="skin-preview" style="background:linear-gradient(0deg, #ff0000, #ffaa00);"></div> Адское Пламя';
         }
 
         function drawSnakeSkin() {
@@ -796,10 +1171,170 @@
                     ctx.fillStyle = `hsl(${(Date.now() / 10 + index * 15) % 360}, 100%, 60%)`;
                     ctx.shadowBlur = 10; ctx.shadowColor = ctx.fillStyle;
                 }
+                // === ПУНКТ 8: СТАТУСНЫЙ СКИН АДСКОЕ ПЛАМЯ ===
+                else if (currentSkin === 'hellfire') {
+                    // Эффект пульсации через синус от времени
+                    let pulse = Math.abs(Math.sin(Date.now() / 200)) * 50;
+                    ctx.fillStyle = index === 0 ? '#111115' : `rgb(${205 + pulse}, ${50 + pulse/2}, 0)`;
+                    ctx.shadowBlur = 12; ctx.shadowColor = '#ff3300';
+                }
                 ctx.fillRect(part.x, part.y, gridSize - 2, gridSize - 2);
                 ctx.shadowBlur = 0;
             });
         }
+
+        // === 🚨 ЛОГИКА ОКНО И ИНТЕРФЕЙСА (МОДАЛКИ) 🚨 ===
+        function openModal(id) {
+            try { snd.click.cloneNode(true).play(); } catch(e){}
+            document.getElementById(id).classList.add('active');
+            if(id === 'profile-modal') updateProfileDOM();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function switchModal(closeId, openId) {
+            document.getElementById(closeId).classList.remove('active');
+            document.getElementById(openId).classList.add('active');
+            if(openId === 'profile-modal') updateProfileDOM();
+        }
+
+        function updateProfileDOM() {
+            document.getElementById('prof-coins').innerText = totalCoins;
+            document.getElementById('prof-record').innerText = highScore;
+            document.getElementById('profile-avatar-render').innerText = userEmoji;
+            document.getElementById('widget-avatar-icon').innerText = userEmoji;
+        }
+
+        // Сборка сетки смайликов (Пункт 6)
+        function buildEmojiGrid() {
+            const container = document.getElementById('emoji-container');
+            container.innerHTML = '';
+            allowedEmojis.forEach(em => {
+                const span = document.createElement('div');
+                span.className = 'emoji-item';
+                span.innerText = em;
+                span.onpointerdown = () => {
+                    userEmoji = em;
+                    localStorage.setItem('snake_user_emoji', userEmoji);
+                    try { snd.click.cloneNode(true).play(); } catch(e){}
+                    switchModal('emoji-modal', 'profile-modal');
+                };
+                container.appendChild(span);
+            });
+        }
+
+        // Обновление отображения ачивок (Цветные / Серые) (Пункт 7)
+        function updateAchievementsUI() {
+            setupAchCard('ach-step', 'ach-step-status', achFirstStep);
+            setupAchCard('ach-businessman', 'ach-businessman-status', achBusinessman);
+            setupAchCard('ach-agent', 'ach-agent-status', achAgent);
+            setupAchCard('ach-dragon', 'ach-dragon-status', achDragon);
+        }
+
+        function setupAchCard(cardId, statusId, isUnlocked) {
+            const card = document.getElementById(cardId);
+            const status = document.getElementById(statusId);
+            if(isUnlocked) {
+                card.classList.remove('locked');
+                card.classList.add('unlocked');
+                status.innerText = '✅';
+            } else {
+                card.classList.add('locked');
+                card.classList.remove('unlocked');
+                status.innerText = '❌';
+            }
+        }
+
+        // === ПУНКТ 1: КНОПКА ТОТАЛЬНОГО СБРОСА ===
+        function triggerTotalReset() {
+            if(confirm("Вы уверены, что хотите сделать тотальный сброс? Все монеты, скины и ачивки обнулятся. Железный РЕКОРД не сотрется!")) {
+                totalCoins = 0;
+                featurePortals = false;
+                currentSkin = 'neon';
+                userEmoji = '😀';
+                isAntiIPBought = false;
+                
+                achFirstStep = false;
+                achBusinessman = false;
+                achAgent = false;
+                achDragon = false;
+
+                localStorage.setItem('snake_coins', 0);
+                localStorage.setItem('snake_portals', 'false');
+                localStorage.setItem('snake_skin', 'neon');
+                localStorage.setItem('snake_user_emoji', '😀');
+                localStorage.setItem('snake_anti_ip', 'false');
+                
+                localStorage.setItem('ach_step', 'false');
+                localStorage.setItem('ach_businessman', 'false');
+                localStorage.setItem('ach_agent', 'false');
+                localStorage.setItem('ach_dragon', 'false');
+
+                // Сбрасываем кнопки в дефолт
+                document.getElementById('buy-portals').classList.remove('bought');
+                document.getElementById('buy-portals').innerHTML = 'Режим «Сквозь стены» <span class="cost">🛒 1000</span>';
+                
+                const hellBtn = document.getElementById('skin-hellfire');
+                hellBtn.classList.add('locked-skin');
+                hellBtn.innerHTML = '<div class="skin-preview" style="background:linear-gradient(0deg, #ff0000, #ffaa00);"></div> 🔒 Адское Пламя (1200 очков)';
+
+                document.querySelectorAll('.skin-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById('skin-neon').classList.add('active');
+
+                coinsElement.innerText = totalCoins;
+                
+                updateProfileDOM();
+                updateAchievementsUI();
+                updateShopButtons();
+                closeModal('profile-modal');
+                
+                alert("Прогресс обнулен, рекорд сохранен! Начинаем заново, Легенда.");
+            }
+        }
+
+        // === ПУНКТ 3: ЛОГИКА ПРАНК-БАННЕРА ===
+        let prankTimer = 30;
+        let prankInterval = null;
+
+        function checkPrankBanner() {
+            if(isAntiIPBought) return; // Если куплена защита — пранк не запускаем
+
+            openModal('prank-modal');
+            prankInterval = setInterval(() => {
+                prankTimer--;
+                document.getElementById('prank-timer-text').innerText = `Осталось: ${prankTimer} сек.`;
+                if(prankTimer <= 0) {
+                    clearInterval(prankInterval);
+                    const closeBtn = document.getElementById('prank-close-btn');
+                    closeBtn.removeAttribute('disabled');
+                    closeBtn.style.background = '#ff0055';
+                    closeBtn.style.cursor = 'pointer';
+                    document.getElementById('prank-timer-text').innerText = 'Доступ получен.';
+                }
+            }, 1000);
+        }
+
+        function closePrankBanner() {
+            if(prankTimer > 0) return;
+            closeModal('prank-modal');
+        }
+
+        // Инициализация при загрузке страницы
+        window.onload = () => {
+            buildEmojiGrid();
+            updateAchievementsUI();
+            updateShopButtons();
+            updateProfileDOM();
+            
+            if(achDragon || highScore >= 1200) {
+                unlockHellfireSkin();
+            }
+            
+            // Запуск пранка с задержкой 1 сек
+            setTimeout(checkPrankBanner, 1000);
+        };
 
         // === 📲 ЛОГИКА УПРАВЛЕНИЯ ===
         function mobileInput(e, dir) {
@@ -834,7 +1369,6 @@
             if (e.key === 'ArrowRight' && dx === 0) { dx = gridSize; dy = 0; }
         });
 
-        // СВАЙПЫ
         let touchStartX = 0;
         let touchStartY = 0;
 
