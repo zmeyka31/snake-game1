@@ -650,7 +650,7 @@
                 </div>
                 <div class="ach-card locked" id="ach-dragon">
                     <div class="ach-title">🔥 Повелитель Драконов</div>
-                    <div class="ach-desc">Набрать 1200 очков в одной катке. Награда: скин.</div>
+                    <div class="ach-desc">Набрать 1200 очков in одной катке. Награда: скин.</div>
                     <div class="ach-status" id="ach-dragon-status">❌</div>
                 </div>
             </div>
@@ -667,7 +667,7 @@
                 Логирование сессии сохранено на удаленном сервере.
             </div>
             <div class="prank-timer" id="prank-timer-text">Осталось: 30 сек.</div>
-            <button class="menu-btn" id="prank-close-btn" disabled style="background:#555; cursor:not-allowed;" onpointerdown="closePrankBanner()">
+            <button class="menu-btn" id="prank-close-btn" style="background:#ff0055; cursor:pointer;" onpointerdown="closePrankBanner()">
                 Спасибо, теперь у меня есть твой IP
             </button>
         </div>
@@ -750,6 +750,9 @@
         let isPlaying = false;
         let isLazyMode = false;
 
+        // ПОФИКСЕНО: Флаг защиты от быстрого разворота сквозь себя
+        let changingDirection = false;
+
         // Загрузка базовых данных из локального хранилища
         let highScore = parseInt(localStorage.getItem('snake_high_score')) || 0;
         let totalCoins = parseInt(localStorage.getItem('snake_coins')) || 0;
@@ -805,6 +808,7 @@
 
             snake = [{ x: 100, y: 100 }, { x: 80, y: 100 }, { x: 60, y: 100 }];
             dx = gridSize; dy = 0; score = 0;
+            changingDirection = false; // Сброс блокировки
             goldFood = null; if(goldFoodTimer) clearTimeout(goldFoodTimer);
             scoreElement.innerText = score;
             resetFood();
@@ -833,6 +837,7 @@
                 document.getElementById('mobile-pause-btn').innerText = "Play";
             } else {
                 isPaused = false;
+                changingDirection = false; // Сброс блокиратора на снятии паузы
                 gameInterval = setInterval(updateGame, currentSpeed);
                 document.getElementById('mobile-pause-btn').innerText = "Pause";
             }
@@ -840,6 +845,9 @@
 
         function updateGame() {
             if (isPaused) return;
+
+            // Разрешаем следующее нажатие клавиши, так как змейка начинает новый шаг
+            changingDirection = false;
 
             const head = { x: snake[0].x + dx, y: snake[0].y + dy };
             
@@ -1307,17 +1315,15 @@
                 document.getElementById('prank-timer-text').innerText = `Осталось: ${prankTimer} сек.`;
                 if(prankTimer <= 0) {
                     clearInterval(prankInterval);
-                    const closeBtn = document.getElementById('prank-close-btn');
-                    closeBtn.removeAttribute('disabled');
-                    closeBtn.style.background = '#ff0055';
-                    closeBtn.style.cursor = 'pointer';
-                    document.getElementById('prank-timer-text').innerText = 'Доступ получен.';
+                    // ПОФИКСЕНО: Табличка сама закроется по окончанию 30 секунд, если пользователь сам её не убрал раньше
+                    closePrankBanner();
                 }
             }, 1000);
         }
 
         function closePrankBanner() {
-            if(prankTimer > 0) return;
+            // ПОФИКСЕНО: На кнопку закрытия можно нажать СРАЗУ, проверка таймера больше не блокирует закрытие!
+            clearInterval(prankInterval);
             closeModal('prank-modal');
         }
 
@@ -1337,6 +1343,15 @@
         };
 
         // === 📲 ЛОГИКА УПРАВЛЕНИЯ ===
+        // ПОФИКСЕНО: Все типы управления теперь используют общую функцию для безопасного изменения направления
+        function handleDirectionChange(newDx, newDy) {
+            if (changingDirection) return; // Игнорируем быстрые клики на одном игровом шаге
+
+            dx = newDx;
+            dy = newDy;
+            changingDirection = true; // Включаем блокировку до выполнения updateGame
+        }
+
         function mobileInput(e, dir) {
             if(e) e.preventDefault();
             if (!isPlaying) return;
@@ -1350,10 +1365,10 @@
 
             if (isPaused) return;
 
-            if (dir === 'ArrowUp' && dy === 0) { dx = 0; dy = -gridSize; }
-            else if (dir === 'ArrowDown' && dy === 0) { dx = 0; dy = gridSize; }
-            else if (dir === 'ArrowLeft' && dx === 0) { dx = -gridSize; dy = 0; }
-            else if (dir === 'ArrowRight' && dx === 0) { dx = gridSize; dy = 0; }
+            if (dir === 'ArrowUp' && dy === 0) { handleDirectionChange(0, -gridSize); }
+            else if (dir === 'ArrowDown' && dy === 0) { handleDirectionChange(0, gridSize); }
+            else if (dir === 'ArrowLeft' && dx === 0) { handleDirectionChange(-gridSize, 0); }
+            else if (dir === 'ArrowRight' && dx === 0) { handleDirectionChange(gridSize, 0); }
         }
 
         document.addEventListener('keydown', (e) => {
@@ -1363,10 +1378,10 @@
             }
             if (isPaused) return;
 
-            if (e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -gridSize; }
-            if (e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = gridSize; }
-            if (e.key === 'ArrowLeft' && dx === 0) { dx = -gridSize; dy = 0; }
-            if (e.key === 'ArrowRight' && dx === 0) { dx = gridSize; dy = 0; }
+            if (e.key === 'ArrowUp' && dy === 0) { handleDirectionChange(0, -gridSize); }
+            if (e.key === 'ArrowDown' && dy === 0) { handleDirectionChange(0, gridSize); }
+            if (e.key === 'ArrowLeft' && dx === 0) { handleDirectionChange(-gridSize, 0); }
+            if (e.key === 'ArrowRight' && dx === 0) { handleDirectionChange(gridSize, 0); }
         });
 
         let touchStartX = 0;
@@ -1388,13 +1403,13 @@
 
             if (Math.abs(xDiff) > Math.abs(yDiff)) {
                 if (Math.abs(xDiff) > 30) {
-                    if (xDiff > 0 && dx === 0) { dx = gridSize; dy = 0; } 
-                    else if (xDiff < 0 && dx === 0) { dx = -gridSize; dy = 0; } 
+                    if (xDiff > 0 && dx === 0) { handleDirectionChange(gridSize, 0); } 
+                    else if (xDiff < 0 && dx === 0) { handleDirectionChange(-gridSize, 0); } 
                 }
             } else {
                 if (Math.abs(yDiff) > 30) {
-                    if (yDiff > 0 && dy === 0) { dx = 0; dy = gridSize; } 
-                    else if (yDiff < 0 && dy === 0) { dx = 0; dy = -gridSize; } 
+                    if (yDiff > 0 && dy === 0) { handleDirectionChange(0, gridSize); } 
+                    else if (yDiff < 0 && dy === 0) { handleDirectionChange(0, -gridSize); } 
                 }
             }
         }, { passive: true });
