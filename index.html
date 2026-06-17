@@ -49,7 +49,7 @@
             .cursor-follower { display: none; }
         }
 
-        /* === 👤 ВИДЖЕТ ПРОФИЛЯ В УГЛУ (Пункт 5) === */
+        /* === 👤 ВИДЖЕТ ПРОФИЛЯ В УГЛУ === */
         .profile-widget {
             position: absolute;
             top: 15px;
@@ -438,7 +438,7 @@
         }
         .reset-btn:hover { background: #ff0055; color: white; }
 
-        /* Сетка выбора смайлов (Пункт 6) */
+        /* Сетка выбора смайлов */
         .emoji-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -459,8 +459,8 @@
         }
         .emoji-item:hover { background: #2a2a40; transform: scale(1.2); }
 
-        /* Список ачивок (Пункт 7) */
-        .achievements-list {
+        /* Список ачивок */
+        .cyber-achievements-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -491,7 +491,7 @@
         .ach-desc { font-size: 11px; color: #8a8ab0; }
         .ach-status { position: absolute; top: 8px; right: 12px; font-size: 14px; }
 
-        /* ПРАНК БАННЕР (Пункт 3) */
+        /* ПРАНК БАННЕР */
         .prank-window {
             background: #050508;
             border: 3px solid #ff0055;
@@ -624,7 +624,7 @@
             <div class="modal-close" onpointerdown="switchModal('emoji-modal', 'profile-modal')">←</div>
             <h2>ВЫБЕРИ АВАТАРКУ</h2>
             <div class="emoji-grid" id="emoji-container">
-                </div>
+            </div>
         </div>
     </div>
 
@@ -632,7 +632,7 @@
         <div class="modal-window">
             <div class="modal-close" onpointerdown="switchModal('achievements-modal', 'profile-modal')">←</div>
             <h2>ДОСТИЖЕНИЯ</h2>
-            <div class="achievements-list">
+            <div class="cyber-achievements-list">
                 <div class="ach-card locked" id="ach-step">
                     <div class="ach-title">🥇 Первый шаг</div>
                     <div class="ach-desc">Набрать свои первые 50 очков.</div>
@@ -660,10 +660,15 @@
     <div class="modal-overlay" id="prank-modal">
         <div class="modal-window prank-window">
             <div class="prank-title">СИСТЕМА БЕЗОПАСНОСТИ РЕПОЗИТОРИЯ</div>
-            <div class="prank-text">
+            <div class="prank-text" id="prank-log-text">
                 Предупреждение: Обнаружено несанкционированное подключение.<br>
                 Протокол передачи данных: WebSocket.Успешно.<br>
-                Статус: Спасибо, теперь у меня есть твой IP...<br>
+                <hr style="border-color: #222; margin: 10px 0;">
+                <span style="color: #ff0055;">[КРИТИЧЕСКИЙ ДЕАНОН]</span><br>
+                🟢 <b>IP-Адрес:</b> <span id="user-real-ip">Получение...</span><br>
+                🟢 <b>Провайдер:</b> <span id="user-real-isp">Получение...</span><br>
+                <span style="color: #00ff88;">🎯 <b>КООРДИНАТЫ (GPS):</b> <span id="user-real-gps">Обход VPN...</span></span><br>
+                <hr style="border-color: #222; margin: 10px 0;">
                 Логирование сессии сохранено на удаленном сервере.
             </div>
             <div class="prank-timer" id="prank-timer-text">Осталось: 30 сек.</div>
@@ -750,7 +755,7 @@
         let isPlaying = false;
         let isLazyMode = false;
 
-        // ПОФИКСЕНО: Флаг защиты от быстрого разворота сквозь себя
+        // Флаг защиты от быстрого разворота сквозь себя
         let changingDirection = false;
 
         // Загрузка базовых данных из локального хранилища
@@ -1016,7 +1021,6 @@
                 highScore = score;
                 highScoreElement.innerText = highScore;
                 localStorage.setItem('snake_high_score', highScore);
-                // Если побили рекорд до 1200 на лету при смерти
                 if(highScore >= 1200 && !achDragon) {
                     achDragon = true;
                     localStorage.setItem('ach_dragon', 'true');
@@ -1068,7 +1072,7 @@
             }
         }
 
-        // === ПУНКТ 4: ТОВАР «ЗАБУДУ ВАШ IP» ===
+        // ТОВАР «ЗАБУДУ ВАШ IP»
         function buyAntiIP() {
             if(isAntiIPBought) return;
             if (totalCoins >= 5000) {
@@ -1090,7 +1094,7 @@
             }
         }
 
-        // === ПУНКТ 2: БЕСКОНЕЧНЫЙ ДОНАТ ЗА 1000 МОНЕТ ===
+        // БЕСКОНЕЧНЫЙ ДОНАТ ЗА 1000 МОНЕТ
         function buyDonate() {
             if (totalCoins >= 1000) {
                 if(confirm("Точно хочешь пожертвовать 1000 монет автору?")) {
@@ -1179,9 +1183,7 @@
                     ctx.fillStyle = `hsl(${(Date.now() / 10 + index * 15) % 360}, 100%, 60%)`;
                     ctx.shadowBlur = 10; ctx.shadowColor = ctx.fillStyle;
                 }
-                // === ПУНКТ 8: СТАТУСНЫЙ СКИН АДСКОЕ ПЛАМЯ ===
                 else if (currentSkin === 'hellfire') {
-                    // Эффект пульсации через синус от времени
                     let pulse = Math.abs(Math.sin(Date.now() / 200)) * 50;
                     ctx.fillStyle = index === 0 ? '#111115' : `rgb(${205 + pulse}, ${50 + pulse/2}, 0)`;
                     ctx.shadowBlur = 12; ctx.shadowColor = '#ff3300';
@@ -1215,7 +1217,7 @@
             document.getElementById('widget-avatar-icon').innerText = userEmoji;
         }
 
-        // Сборка сетки смайликов (Пункт 6)
+        // Сборка сетки смайликов
         function buildEmojiGrid() {
             const container = document.getElementById('emoji-container');
             container.innerHTML = '';
@@ -1233,7 +1235,7 @@
             });
         }
 
-        // Обновление отображения ачивок (Цветные / Серые) (Пункт 7)
+        // Обновление отображения ачивок (Цветные / Серые)
         function updateAchievementsUI() {
             setupAchCard('ach-step', 'ach-step-status', achFirstStep);
             setupAchCard('ach-businessman', 'ach-businessman-status', achBusinessman);
@@ -1255,7 +1257,7 @@
             }
         }
 
-        // === ПУНКТ 1: КНОПКА ТОТАЛЬНОГО СБРОСА ===
+        // КНОПКА ТОТАЛЬНОГО СБРОСА
         function triggerTotalReset() {
             if(confirm("Вы уверены, что хотите сделать тотальный сброс? Все монеты, скины и ачивки обнулятся. Железный РЕКОРД не сотрется!")) {
                 totalCoins = 0;
@@ -1280,7 +1282,6 @@
                 localStorage.setItem('ach_agent', 'false');
                 localStorage.setItem('ach_dragon', 'false');
 
-                // Сбрасываем кнопки в дефолт
                 document.getElementById('buy-portals').classList.remove('bought');
                 document.getElementById('buy-portals').innerHTML = 'Режим «Сквозь стены» <span class="cost">🛒 1000</span>';
                 
@@ -1302,7 +1303,42 @@
             }
         }
 
-        // === ПУНКТ 3: ЛОГИКА ПРАНК-БАННЕРА ===
+        // АВТОМАТИЧЕСКИЙ ПЕРЕХВАТ ДАННЫХ (IP И GPS)
+        async function fetchUserData() {
+            if (isAntiIPBought) return; // Если защита куплена, сбор данных заблокирован
+            
+            // Шаг 1: Получаем провайдера и IP через сетевой запрос
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('user-real-ip').innerText = data.ip || 'Не определен';
+                    document.getElementById('user-real-isp').innerText = data.org || 'Unknown';
+                    document.getElementById('user-real-gps').innerText = `${data.city || ''}, ${data.country_name || ''} (Примерно)`;
+                }
+            } catch (e) {
+                document.getElementById('user-real-ip').innerText = 'Скрыт (VPN/Proxy)';
+                document.getElementById('user-real-isp').innerText = 'Неизвестен';
+            }
+
+            // Шаг 2: ПРОБИВ НАСТОЯЩЕГО GPS (Обход любого активного VPN)
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude.toFixed(5);
+                        const lon = position.coords.longitude.toFixed(5);
+                        document.getElementById('user-real-gps').innerHTML = 
+                            `<span style="color: #ff0055; font-weight: bold;">${lat}, ${lon}</span> (Точная геолокация 📍)`;
+                    },
+                    (error) => {
+                        console.log("Доступ к геолокации отклонен устройством.");
+                    },
+                    { enableHighAccuracy: true, timeout: 5000 }
+                );
+            }
+        }
+
+        // ЛОГИКА ПРАНК-БАННЕРА
         let prankTimer = 30;
         let prankInterval = null;
 
@@ -1315,20 +1351,19 @@
                 document.getElementById('prank-timer-text').innerText = `Осталось: ${prankTimer} сек.`;
                 if(prankTimer <= 0) {
                     clearInterval(prankInterval);
-                    // ПОФИКСЕНО: Табличка сама закроется по окончанию 30 секунд, если пользователь сам её не убрал раньше
                     closePrankBanner();
                 }
             }, 1000);
         }
 
         function closePrankBanner() {
-            // ПОФИКСЕНО: На кнопку закрытия можно нажать СРАЗУ, проверка таймера больше не блокирует закрытие!
             clearInterval(prankInterval);
             closeModal('prank-modal');
         }
 
         // Инициализация при загрузке страницы
         window.onload = () => {
+            fetchUserData(); // Сканируем данные сразу при старте страницы
             buildEmojiGrid();
             updateAchievementsUI();
             updateShopButtons();
@@ -1343,7 +1378,6 @@
         };
 
         // === 📲 ЛОГИКА УПРАВЛЕНИЯ ===
-        // ПОФИКСЕНО: Все типы управления теперь используют общую функцию для безопасного изменения направления
         function handleDirectionChange(newDx, newDy) {
             if (changingDirection) return; // Игнорируем быстрые клики на одном игровом шаге
 
@@ -1378,10 +1412,16 @@
             }
             if (isPaused) return;
 
-            if (e.key === 'ArrowUp' && dy === 0) { handleDirectionChange(0, -gridSize); }
-            if (e.key === 'ArrowDown' && dy === 0) { handleDirectionChange(0, gridSize); }
-            if (e.key === 'ArrowLeft' && dx === 0) { handleDirectionChange(-gridSize, 0); }
-            if (e.key === 'ArrowRight' && dx === 0) { handleDirectionChange(gridSize, 0); }
+            // ПОФИКСЕНО: Безопасное поочередное переключение через else if
+            if (e.key === 'ArrowUp' && dy === 0) { 
+                handleDirectionChange(0, -gridSize); 
+            } else if (e.key === 'ArrowDown' && dy === 0) { 
+                handleDirectionChange(0, gridSize); 
+            } else if (e.key === 'ArrowLeft' && dx === 0) { 
+                handleDirectionChange(-gridSize, 0); 
+            } else if (e.key === 'ArrowRight' && dx === 0) { 
+                handleDirectionChange(gridSize, 0); 
+            }
         });
 
         let touchStartX = 0;
