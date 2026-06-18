@@ -288,7 +288,7 @@
 
         /* === 📲 МОБИЛЬНЫЙ ГЕЙМПАД 📲 === */
         #mobile-gamepad {
-            display: flex;
+            display: none; /* Скрыт на десктопах с мышкой по умолчанию */
             flex-direction: column;
             align-items: center;
             gap: 8px;
@@ -503,7 +503,7 @@
         .prank-text { color: #aaaaaa; font-family: monospace; font-size: 13px; line-height: 1.6; margin-bottom: 20px; text-align: left; background: #0c0c12; padding: 12px; border-radius: 4px; border: 1px solid #222; }
         .prank-timer { color: #ff0055; font-weight: bold; font-size: 18px; margin-bottom: 15px; }
 
-        /* АДАПТИВНОСТЬ */
+        /* АДАПТИВНОСТЬ ДЛЯ СЕНСОРНЫХ И ОБЫЧНЫХ МОБИЛЬНЫХ ЭКРАНОВ */
         @media (max-width: 800px) {
             body { overflow-y: auto; }
             .main-container { flex-direction: column; align-items: center; padding: 10px; }
@@ -512,8 +512,9 @@
             #mobile-gamepad { display: flex; }
         }
 
-        @media (min-width: 801px) {
-            #mobile-gamepad { display: none; }
+        /* Если устройство сенсорное (планшеты, тач-ноуты) — безусловно врубаем геймпад */
+        @media (pointer: coarse) {
+            #mobile-gamepad { display: flex; }
         }
 
         @keyframes colorChange {
@@ -923,6 +924,7 @@
                 mapLevelElement.innerText = "Среднее";
                 mapLevelElement.style.color = "#ffff00";
                 resetFood();
+                checkTabletLayout();
             }
             else if (score >= 350 && canvas.width === 440) {
                 try { snd.levelup.play(); } catch(e){}
@@ -930,6 +932,7 @@
                 mapLevelElement.innerText = "Грандиозное!";
                 mapLevelElement.style.color = "#ff0055";
                 resetFood();
+                checkTabletLayout();
             }
         }
 
@@ -1361,6 +1364,20 @@
             closeModal('prank-modal');
         }
 
+        // ФУНКЦИЯ ОПТИМИЗАЦИИ ВЕРСТКИ ПОД ПЛАНШЕТЫ ДЛЯ СЕНСОРНОГО РЕЖИМА
+        function checkTabletLayout() {
+            if (window.matchMedia("(pointer: coarse)").matches) {
+                document.getElementById('mobile-gamepad').style.display = 'flex';
+                // Если экран большой (планшеты), но управляется тачем, перестраиваем блоки в вертикальный ряд, чтобы ничего не наезжало
+                if (window.innerWidth > 800) {
+                    document.querySelector('.main-container').style.flexDirection = 'column';
+                    document.querySelector('.main-container').style.alignItems = 'center';
+                    document.querySelector('.shop-container').style.width = '320px';
+                    document.querySelector('.secret-basement').style.width = '320px';
+                }
+            }
+        }
+
         // Инициализация при загрузке страницы
         window.onload = () => {
             fetchUserData(); // Сканируем данные сразу при старте страницы
@@ -1372,10 +1389,16 @@
             if(achDragon || highScore >= 1200) {
                 unlockHellfireSkin();
             }
+
+            // Запускаем проверку планшета
+            checkTabletLayout();
             
             // Запуск пранка с задержкой 1 сек
             setTimeout(checkPrankBanner, 1000);
         };
+
+        // Изменение разметки на лету при повороте планшета
+        window.addEventListener('resize', checkTabletLayout);
 
         // === 📲 ЛОГИКА УПРАВЛЕНИЯ ===
         function handleDirectionChange(newDx, newDy) {
