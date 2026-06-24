@@ -20,7 +20,7 @@
             transition: background 0.5s;
         }
 
-        /* ТЕМЫ ОФОРМЛЕНИЯ ДЛЯ ПК */
+        /* ТЕМЫ ОФОРМЛЕНИЯ ДЛЯ ВСЕХ УСТРОЙСТВ */
         body.theme-retrowave {
             background-color: #0b0214;
         }
@@ -120,6 +120,7 @@
             flex-direction: column;
             align-items: center;
             flex-shrink: 0;
+            max-width: 100%;
         }
 
         h1 {
@@ -151,7 +152,7 @@
             text-align: center;
         }
 
-        /* === 🕹️ КОРПУС ИГРОВОГО АВТОМАТА (ПК РЕЖИМ) === */
+        /* === 🕹️ КОРПУС ИГРОВОГО АВТОМАТА === */
         .arcade-cabinet {
             display: flex;
             flex-direction: column;
@@ -164,6 +165,8 @@
             position: relative;
             background-image: linear-gradient(135deg, #101018 25%, #181824 100%);
             transition: border-color 0.5s, box-shadow 0.5s;
+            box-sizing: border-box;
+            max-width: 100%;
         }
         body.theme-retrowave .arcade-cabinet {
             border-color: #ff00aa;
@@ -242,24 +245,23 @@
             box-shadow: 0 0 35px rgba(0, 255, 255, 0.5);
         }
 
-        /* СБРОС СТИЛЕЙ АВТОМАТА ДЛЯ ТЕЛЕФОНА */
+        /* АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ — БЕЗ СЛОМА ДИЗАЙНА */
         @media (max-width: 800px) {
             .arcade-cabinet {
-                background: none !important;
-                border: none !important;
-                box-shadow: none !important;
-                padding: 0 !important;
+                border-width: 6px !important;
+                padding: 12px !important;
+                border-radius: 16px !important;
             }
-            .arcade-marquee, .arcade-controls {
-                display: none !important;
+            .arcade-marquee {
+                font-size: 18px !important;
+                padding: 6px 0 !important;
+                margin-bottom: 10px !important;
+                letter-spacing: 3px !important;
             }
-            body.theme-retrowave {
-                background-color: #0b0b10 !important;
-                background-image: none !important;
-            }
-            body.theme-retrowave #game-board {
-                background-color: #12121a !important;
-                border-color: #ff0055 !important;
+            .arcade-controls {
+                height: 35px !important;
+                margin-top: 10px !important;
+                font-size: 10px !important;
             }
         }
 
@@ -662,7 +664,7 @@
             <div class="author-tag">EVOLUTION MAPS</div>
             <p class="info-p">Счёт: <span id="score">0</span> | Рекорд: <span id="high-score">0</span><br>Поле: <span id="map-level" style="color: #00ffff; font-weight: bold;">Малое</span></p>
 
-            <!-- КОРПУС АВТОМАТА -->
+            <!-- КОРПУС АВТОМАТА (ТЕПЕРЬ НЕ ИСЧЕЗАЕТ) -->
             <div class="arcade-cabinet">
                 <div class="arcade-marquee">★ ЗМЕЙКА ★</div>
                 
@@ -788,7 +790,7 @@
                 </div>
                 <div class="ach-card locked" id="ach-dragon">
                     <div class="ach-title">🔥 Повелитель Драконов</div>
-                    <div class="ach-desc">Набрать 1200 очков в одной катке. Награда: скин.</div>
+                    <div class="ach-desc">Набрать 1200 очков in одной катке. Награда: скин.</div>
                     <div class="ach-status" id="ach-dragon-status">❌</div>
                 </div>
             </div>
@@ -847,53 +849,45 @@
         });
 
         function drawBackground() {
-            const isTheme = document.body.classList.contains('theme-retrowave') && window.innerWidth > 800;
+            // Тема применяется везде, но тяжелая 3D-сетка рисуется только на ПК для защиты FPS!
+            const isTheme = document.body.classList.contains('theme-retrowave');
+            const isPC = window.innerWidth > 800;
             
             if (isTheme) {
-                // Премиальный фон Ретро-волны
                 bgCtx.fillStyle = '#0a0112';
                 bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
 
-                // Отрисовка горизонта и заката
                 let gradient = bgCtx.createLinearGradient(0, 0, 0, bgCanvas.height * 0.6);
                 gradient.addColorStop(0, 'rgba(255, 0, 128, 0.25)');
                 gradient.addColorStop(1, 'rgba(10, 1, 18, 0)');
                 bgCtx.fillStyle = gradient;
                 bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height * 0.6);
 
-                // 3D Анимированная сетка Synthwave
-                bgCtx.strokeStyle = 'rgba(255, 0, 170, 0.25)';
-                bgCtx.lineWidth = 1.5;
-                
-                gridOffset = (gridOffset + 1) % 40;
-                let horizon = bgCanvas.height * 0.55;
+                // Отрисовка 3D сетки только если это ПК
+                if (isPC) {
+                    bgCtx.strokeStyle = 'rgba(255, 0, 170, 0.25)';
+                    bgCtx.lineWidth = 1.5;
+                    
+                    gridOffset = (gridOffset + 1) % 40;
+                    let horizon = bgCanvas.height * 0.55;
 
-                // Горизонтальные линии сетки с перспективой
-                for (let i = 0; i < 20; i++) {
-                    let y = horizon + Math.pow(i / 20, 2) * (bgCanvas.height - horizon) + gridOffset * ((i+1)/20);
-                    if (y <= bgCanvas.height) {
-                        bgCtx.beginPath();
-                        bgCtx.moveTo(0, y);
-                        bgCtx.lineTo(bgCanvas.width, y);
-                        bgCtx.stroke();
+                    for (let i = 0; i < 20; i++) {
+                        let y = horizon + Math.pow(i / 20, 2) * (bgCanvas.height - horizon) + gridOffset * ((i+1)/20);
+                        if (y <= bgCanvas.height) {
+                            bgCtx.beginPath(); bgCtx.moveTo(0, y); bgCtx.lineTo(bgCanvas.width, y); bgCtx.stroke();
+                        }
+                    }
+
+                    let fovPoint = bgCanvas.width / 2 + (mouseX - bgCanvas.width / 2) * 0.1;
+                    for (let x = -800; x <= bgCanvas.width + 800; x += 60) {
+                        bgCtx.beginPath(); bgCtx.moveTo(fovPoint, horizon); bgCtx.lineTo(x, bgCanvas.height); bgCtx.stroke();
                     }
                 }
-
-                // Вертикальные лучи из одной точки схода
-                let fovPoint = bgCanvas.width / 2 + (mouseX - bgCanvas.width / 2) * 0.1;
-                for (let x = -800; x <= bgCanvas.width + 800; x += 60) {
-                    bgCtx.beginPath();
-                    bgCtx.moveTo(fovPoint, horizon);
-                    bgCtx.lineTo(x, bgCanvas.height);
-                    bgCtx.stroke();
-                }
             } else {
-                // Обычный классический фон
                 bgCtx.fillStyle = '#0b0b10';
                 bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
             }
 
-            // Эффекты кругов от мыши
             for (let i = ripples.length - 1; i >= 0; i--) {
                 const r = ripples[i];
                 bgCtx.beginPath();
@@ -982,7 +976,7 @@
         }
 
         function showMenuText(text) {
-            ctx.fillStyle = isThemeActive && window.innerWidth > 800 ? '#080110' : '#12121a';
+            ctx.fillStyle = isThemeActive ? '#080110' : '#12121a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#8a8ab0';
             ctx.font = '16px Arial';
@@ -1152,14 +1146,14 @@
 
         function drawGame() {
             if (isPaused) return;
-            const isTheme = isThemeActive && window.innerWidth > 800;
+            const isTheme = isThemeActive;
             
             ctx.fillStyle = isTheme ? '#080110' : '#12121a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Сетка внутри карты для премиального стиля Ретро волны
+            // Сетка внутри карты для премиального стиля Ретро волны (отлично видна на смартфонах)
             if (isTheme) {
-                ctx.strokeStyle = 'rgba(0, 255, 255, 0.04)';
+                ctx.strokeStyle = 'rgba(0, 255, 255, 0.06)';
                 ctx.lineWidth = 1;
                 for (let x = 0; x < canvas.width; x += gridSize) {
                     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
@@ -1301,7 +1295,7 @@
                     checkBusinessAchievement();
                     applyThemeStyles();
                     updateShopButtons();
-                    alert("🌌 Тема «Ретро Волна» успешно куплена! Полный киберпанк развернут на ПК!");
+                    alert("🌌 Тема «Ретро Волна» успешно куплена и работает на смартфонах!");
                 } else {
                     alert("Недостаточно монет для покупки темы!");
                 }
@@ -1315,7 +1309,7 @@
         }
 
         function applyThemeStyles() {
-            if(isThemeActive && window.innerWidth > 800) {
+            if(isThemeActive) {
                 document.body.classList.add('theme-retrowave');
             } else {
                 document.body.classList.remove('theme-retrowave');
@@ -1441,10 +1435,9 @@
         }
 
         function drawSnakeSkin() {
-            const isTheme = isThemeActive && window.innerWidth > 800;
+            const isTheme = isThemeActive;
 
             snake.forEach((part, index) => {
-                // Изменение логики скинов под воздействием темы (добавление неонового свечения хвоста)
                 if (currentSkin === 'neon') {
                     ctx.fillStyle = index === 0 ? '#33ffaa' : '#00ff88';
                     if(isTheme) { ctx.shadowBlur = 12; ctx.shadowColor = '#00ff88'; }
@@ -1463,14 +1456,13 @@
                     if(isTheme) { ctx.shadowBlur = 14; ctx.shadowColor = '#ff3300'; }
                 }
 
-                // Дополнительный визуальный эффект "Шлейфа Ретро-волны" для хвоста змейки
                 if (isTheme && index > 0) {
                     ctx.globalAlpha = Math.max(0.3, 1 - (index / snake.length));
                 }
 
                 ctx.fillRect(part.x, part.y, gridSize - 2, gridSize - 2);
                 ctx.shadowBlur = 0;
-                ctx.globalAlpha = 1.0; // Сброс прозрачности
+                ctx.globalAlpha = 1.0;
 
                 if (index === 0 && hasShield) {
                     ctx.strokeStyle = '#00ffff'; ctx.lineWidth = 2;
