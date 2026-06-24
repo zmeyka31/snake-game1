@@ -17,6 +17,12 @@
             justify-content: center;
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background 0.5s;
+        }
+
+        /* ТЕМЫ ОФОРМЛЕНИЯ ДЛЯ ПК */
+        body.theme-retrowave {
+            background-color: #0b0214;
         }
 
         /* ИНТЕРАКТИВНЫЙ ЗАДНИЙ ФОН */
@@ -72,6 +78,10 @@
             border-color: #ff0055;
             box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
         }
+        body.theme-retrowave .profile-widget {
+            border-color: #ff00aa;
+            box-shadow: 0 0 15px rgba(255, 0, 170, 0.3);
+        }
         .widget-avatar {
             width: 30px;
             height: 30px;
@@ -88,6 +98,7 @@
             font-size: 16px;
             font-weight: bold;
         }
+        body.theme-retrowave .widget-burger { color: #ff00aa; }
 
         /* Главный контейнер */
         .main-container {
@@ -101,7 +112,7 @@
             padding: 15px;
             box-sizing: border-box;
             max-width: 100%;
-            margin-top: 50px; /* Отступ под виджет */
+            margin-top: 50px;
         }
 
         .game-section {
@@ -118,6 +129,10 @@
             text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
             text-align: center;
         }
+        body.theme-retrowave h1 {
+            color: #ff00aa;
+            text-shadow: 0 0 25px rgba(255, 0, 170, 0.8);
+        }
 
         .author-tag {
             color: #ff0055;
@@ -127,12 +142,87 @@
             margin-bottom: 5px;
             text-shadow: 0 0 10px rgba(255, 0, 85, 0.4);
         }
+        body.theme-retrowave .author-tag { color: #00ffff; text-shadow: 0 0 10px #00ffff; }
 
         .info-p {
             color: #8a8ab0;
             margin: 0 0 10px 0;
             font-size: 13px;
             text-align: center;
+        }
+
+        /* === 🕹️ КОРПУС ИГРОВОГО АВТОМАТА (ПК РЕЖИМ) === */
+        .arcade-cabinet {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #161622;
+            border: 10px solid #2e2e40;
+            border-radius: 24px;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.25), inset 0 0 30px rgba(0,0,0,0.9);
+            padding: 25px;
+            position: relative;
+            background-image: linear-gradient(135deg, #101018 25%, #181824 100%);
+            transition: border-color 0.5s, box-shadow 0.5s;
+        }
+        body.theme-retrowave .arcade-cabinet {
+            border-color: #ff00aa;
+            box-shadow: 0 0 60px rgba(255, 0, 170, 0.5), inset 0 0 40px rgba(0,0,0,0.9);
+            background-image: linear-gradient(135deg, #12021c 25%, #240538 100%);
+        }
+
+        /* Переливающаяся верхняя вывеска автомата */
+        .arcade-marquee {
+            width: 100%;
+            background: #050508;
+            border: 3px solid #00ffff;
+            color: #fff;
+            text-align: center;
+            font-weight: 900;
+            font-size: 24px;
+            padding: 12px 0;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            position: relative;
+            overflow: hidden;
+            background-image: linear-gradient(90deg, #ff0055, #00ffff, #ff0055);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: marqueeShimmer 3s linear infinite;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.6));
+        }
+        body.theme-retrowave .arcade-marquee {
+            border-color: #ff00aa;
+            background-image: linear-gradient(90deg, #ff00aa, #33ff00, #ff00aa);
+            filter: drop-shadow(0 0 15px rgba(255, 0, 170, 0.8));
+        }
+
+        @keyframes marqueeShimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* Панель управления снизу автомата */
+        .arcade-controls {
+            width: 100%;
+            margin-top: 20px;
+            height: 45px;
+            background: #222230;
+            border-radius: 8px;
+            border-top: 4px solid #00ffff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+        body.theme-retrowave .arcade-controls {
+            border-top-color: #ff00aa;
+            background: #250530;
         }
 
         #game-board {
@@ -144,6 +234,33 @@
             max-height: 45vh;
             object-fit: contain;
             height: auto;
+            transition: background-color 0.5s, border-color 0.5s, box-shadow 0.5s;
+        }
+        body.theme-retrowave #game-board {
+            background-color: #080110;
+            border-color: #00ffff;
+            box-shadow: 0 0 35px rgba(0, 255, 255, 0.5);
+        }
+
+        /* СБРОС СТИЛЕЙ АВТОМАТА ДЛЯ ТЕЛЕФОНА */
+        @media (max-width: 800px) {
+            .arcade-cabinet {
+                background: none !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+            }
+            .arcade-marquee, .arcade-controls {
+                display: none !important;
+            }
+            body.theme-retrowave {
+                background-color: #0b0b10 !important;
+                background-image: none !important;
+            }
+            body.theme-retrowave #game-board {
+                background-color: #12121a !important;
+                border-color: #ff0055 !important;
+            }
         }
 
         .start-btn {
@@ -155,18 +272,20 @@
             font-weight: bold;
             cursor: pointer;
             border-radius: 6px;
-            margin-top: 10px;
+            margin-top: 15px;
             transition: 0.2s;
             z-index: 20;
             width: 100%;
             max-width: 300px;
         }
         .start-btn:hover { background-color: #ff3377; transform: scale(1.02); }
+        body.theme-retrowave .start-btn { background-color: #ff00aa; }
+        body.theme-retrowave .start-btn:hover { background-color: #ff33cc; }
 
         /* ПАНЕЛЬ СКИНОВ И МАГАЗИНА */
         .shop-container {
             width: 280px;
-            height: 485px;
+            height: 525px;
             background-color: #12121a;
             border: 4px solid #00ffff;
             box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
@@ -174,6 +293,12 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            transition: border-color 0.5s, box-shadow 0.5s;
+        }
+        body.theme-retrowave .shop-container {
+            border-color: #ff00aa;
+            box-shadow: 0 0 30px rgba(255, 0, 170, 0.3);
+            background-color: #11021a;
         }
 
         .shop-header {
@@ -183,6 +308,11 @@
             font-weight: bold;
             text-align: center;
             border-bottom: 2px solid #00ffff;
+        }
+        body.theme-retrowave .shop-header {
+            background-color: #200430;
+            color: #ff00aa;
+            border-bottom-color: #ff00aa;
         }
 
         .shop-balance {
@@ -224,6 +354,7 @@
         }
         .skin-btn:hover:not(.locked-skin) { border-color: #00ff88; }
         .skin-btn.active { border-color: #ff0055; background: #2a2a40; }
+        body.theme-retrowave .skin-btn.active { border-color: #ff00aa; background: #300640; }
         .skin-btn.locked-skin { background: #151520; color: #555; border-color: #222; cursor: not-allowed; }
         .skin-preview { width: 15px; height: 15px; border-radius: 2px; margin-right: 10px; }
 
@@ -243,7 +374,9 @@
             width: 100%;
         }
         .buy-btn:hover { background: #ff3377; }
-        .buy-btn.bought { background: #505055; cursor: not-allowed; border: 1px solid #777; }
+        body.theme-retrowave .buy-btn { background: #ff00aa; }
+        body.theme-retrowave .buy-btn:hover { background: #ff33cc; }
+        .buy-btn.bought { background: #505055 !important; color: #aaa !important; cursor: not-allowed; border: 1px solid #777; }
         .buy-btn .cost { color: #00ff88; font-size: 11px; }
 
         /* ПОДВАЛ ДЛЯ РЕЖИМА ЛЕНТЯЯ */
@@ -288,7 +421,7 @@
 
         /* === 📲 МОБИЛЬНЫЙ ГЕЙМПАД 📲 === */
         #mobile-gamepad {
-            display: none; /* Скрыт на десктопах с мышкой по умолчанию */
+            display: none;
             flex-direction: column;
             align-items: center;
             gap: 8px;
@@ -337,7 +470,7 @@
         }
         #mobile-pause-btn:active { background: rgba(0, 255, 255, 0.2); }
 
-        /* === 🚨 ОКНА МОДАЛОК (ПРОФИЛЬ, АЧИВКИ, СМАЙЛЫ, ПРАНК) 🚨 === */
+        /* === 🚨 ОКНА МОДАЛОК 🚨 === */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -376,7 +509,6 @@
         }
         .modal-close:hover { color: #ff0055; }
 
-        /* Стили внутренностей профиля */
         .profile-big-avatar {
             width: 80px;
             height: 80px;
@@ -415,7 +547,6 @@
             margin: 5px 0;
         }
 
-        /* Кнопки меню профиля */
         .menu-btn {
             width: 100%;
             background: #ff0055;
@@ -438,7 +569,6 @@
         }
         .reset-btn:hover { background: #ff0055; color: white; }
 
-        /* Сетка выбора смайлов */
         .emoji-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -459,7 +589,6 @@
         }
         .emoji-item:hover { background: #2a2a40; transform: scale(1.2); }
 
-        /* Список ачивок */
         .cyber-achievements-list {
             display: flex;
             flex-direction: column;
@@ -479,14 +608,8 @@
             position: relative;
             transition: 0.2s;
         }
-        /* Серый фильтр для закрытых ачивок */
-        .ach-card.locked {
-            filter: grayscale(100%) opacity(35%);
-        }
-        .ach-card.unlocked {
-            border-color: #00ff88;
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
-        }
+        .ach-card.locked { filter: grayscale(100%) opacity(35%); }
+        .ach-card.unlocked { border-color: #00ff88; box-shadow: 0 0 10px rgba(0, 255, 136, 0.1); }
         .ach-title { font-weight: bold; font-size: 14px; color: #00ff88; }
         .ach-desc { font-size: 11px; color: #8a8ab0; }
         .ach-status { position: absolute; top: 8px; right: 12px; font-size: 14px; }
@@ -503,23 +626,21 @@
         .prank-text { color: #aaaaaa; font-family: monospace; font-size: 13px; line-height: 1.6; margin-bottom: 20px; text-align: left; background: #0c0c12; padding: 12px; border-radius: 4px; border: 1px solid #222; }
         .prank-timer { color: #ff0055; font-weight: bold; font-size: 18px; margin-bottom: 15px; }
 
-        /* АДАПТИВНОСТЬ ДЛЯ СЕНСОРНЫХ И ОБЫЧНЫХ МОБИЛЬНЫХ ЭКРАНОВ */
         @media (max-width: 800px) {
             body { overflow-y: auto; }
-            .main-container { flex-direction: column; align-items: center; padding: 10px; }
+            .main-container { flex-direction: column; align-items: center; padding: 10px; margin-top: 30px; }
             .shop-container { width: 300px; height: 350px; margin-top: 15px; }
             .secret-basement { width: 300px; margin-top: 20px; margin-bottom: 30px; }
             #mobile-gamepad { display: flex; }
         }
 
-        /* Если устройство сенсорное (планшеты, тач-ноуты) — безусловно врубаем геймпад */
         @media (pointer: coarse) {
             #mobile-gamepad { display: flex; }
         }
 
         @keyframes colorChange {
             0% { border-color: #00ffff; box-shadow: 0 0 15px #00ffff; }
-            33% { border-color: #ff00ff; box-shadow: 0 0 15px #ff00ff; }
+            33% { border-color: #ff0055; box-shadow: 0 0 15px #ff0055; }
             66% { border-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
             100% { border-color: #00ffff; box-shadow: 0 0 15px #00ffff; }
         }
@@ -541,7 +662,17 @@
             <div class="author-tag">EVOLUTION MAPS</div>
             <p class="info-p">Счёт: <span id="score">0</span> | Рекорд: <span id="high-score">0</span><br>Поле: <span id="map-level" style="color: #00ffff; font-weight: bold;">Малое</span></p>
 
-            <canvas id="game-board" width="300" height="300"></canvas>
+            <!-- КОРПУС АВТОМАТА -->
+            <div class="arcade-cabinet">
+                <div class="arcade-marquee">★ ЗМЕЙКА ★</div>
+                
+                <canvas id="game-board" width="300" height="300"></canvas>
+                
+                <div class="arcade-controls">
+                    <span style="color:#00ffff" id="cabinet-p1">🕹️ INSERT COIN</span>
+                    <span style="color:#ff0055" id="cabinet-shield-indicator">🔴 🟡 🔵</span>
+                </div>
+            </div>
 
             <button class="start-btn" onpointerdown="startGame()">ЗАПУСТИТЬ КАТКУ</button>
 
@@ -578,8 +709,14 @@
                     </button>
 
                     <div class="shop-category">Магазин Улучшений (За очки)</div>
+                    <button class="buy-btn" id="buy-shield" onpointerdown="buyShield()">
+                        🛡️ Щит от 1 удара <span class="cost">🛒 600</span>
+                    </button>
+                    <button class="buy-btn" id="buy-theme-retrowave" onpointerdown="buyTheme()">
+                        🌌 Тема «Ретро Волна» <span class="cost" id="theme-cost-text">🛒 1500</span>
+                    </button>
                     <button class="buy-btn" id="buy-portals" onpointerdown="buyFeature('portals', 1000)">
-                        Режим «Сквозь стены» <span class="cost">🛒 1000</span>
+                        Режим «Сквозь walls» <span class="cost">🛒 1000</span>
                     </button>
                     <button class="buy-btn" id="buy-slow" onpointerdown="buyFeature('slow', 300)">
                         Super-Замедление <span class="cost">🛒 300</span>
@@ -603,6 +740,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛКИ -->
     <div class="modal-overlay" id="profile-modal">
         <div class="modal-window">
             <div class="modal-close" onpointerdown="closeModal('profile-modal')">×</div>
@@ -624,8 +762,7 @@
         <div class="modal-window">
             <div class="modal-close" onpointerdown="switchModal('emoji-modal', 'profile-modal')">←</div>
             <h2>ВЫБЕРИ АВАТАРКУ</h2>
-            <div class="emoji-grid" id="emoji-container">
-            </div>
+            <div class="emoji-grid" id="emoji-container"></div>
         </div>
     </div>
 
@@ -651,7 +788,7 @@
                 </div>
                 <div class="ach-card locked" id="ach-dragon">
                     <div class="ach-title">🔥 Повелитель Драконов</div>
-                    <div class="ach-desc">Набрать 1200 очков in одной катке. Награда: скин.</div>
+                    <div class="ach-desc">Набрать 1200 очков в одной катке. Награда: скин.</div>
                     <div class="ach-status" id="ach-dragon-status">❌</div>
                 </div>
             </div>
@@ -680,7 +817,7 @@
     </div>
 
     <script>
-        // === 🌀 ИНТЕРАКТИВНЫЙ ФОН 🌀 ===
+        // === 🌀 ИНТЕРАКТИВНЫЙ ФОН С КИБЕР-СЕТКОЙ 🌀 ===
         const bgCanvas = document.getElementById('bg-canvas');
         const bgCtx = bgCanvas.getContext('2d');
         const follower = document.getElementById('follower');
@@ -688,6 +825,8 @@
         bgCanvas.width = window.innerWidth;
         bgCanvas.height = window.innerHeight;
         let ripples = [];
+        let mouseX = window.innerWidth / 2;
+        let gridOffset = 0;
 
         window.addEventListener('resize', () => {
             bgCanvas.width = window.innerWidth;
@@ -695,6 +834,7 @@
         });
 
         window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
             ripples.push({
                 x: e.clientX,
                 y: e.clientY,
@@ -707,13 +847,58 @@
         });
 
         function drawBackground() {
-            bgCtx.fillStyle = '#0b0b10';
-            bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+            const isTheme = document.body.classList.contains('theme-retrowave') && window.innerWidth > 800;
+            
+            if (isTheme) {
+                // Премиальный фон Ретро-волны
+                bgCtx.fillStyle = '#0a0112';
+                bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+                // Отрисовка горизонта и заката
+                let gradient = bgCtx.createLinearGradient(0, 0, 0, bgCanvas.height * 0.6);
+                gradient.addColorStop(0, 'rgba(255, 0, 128, 0.25)');
+                gradient.addColorStop(1, 'rgba(10, 1, 18, 0)');
+                bgCtx.fillStyle = gradient;
+                bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height * 0.6);
+
+                // 3D Анимированная сетка Synthwave
+                bgCtx.strokeStyle = 'rgba(255, 0, 170, 0.25)';
+                bgCtx.lineWidth = 1.5;
+                
+                gridOffset = (gridOffset + 1) % 40;
+                let horizon = bgCanvas.height * 0.55;
+
+                // Горизонтальные линии сетки с перспективой
+                for (let i = 0; i < 20; i++) {
+                    let y = horizon + Math.pow(i / 20, 2) * (bgCanvas.height - horizon) + gridOffset * ((i+1)/20);
+                    if (y <= bgCanvas.height) {
+                        bgCtx.beginPath();
+                        bgCtx.moveTo(0, y);
+                        bgCtx.lineTo(bgCanvas.width, y);
+                        bgCtx.stroke();
+                    }
+                }
+
+                // Вертикальные лучи из одной точки схода
+                let fovPoint = bgCanvas.width / 2 + (mouseX - bgCanvas.width / 2) * 0.1;
+                for (let x = -800; x <= bgCanvas.width + 800; x += 60) {
+                    bgCtx.beginPath();
+                    bgCtx.moveTo(fovPoint, horizon);
+                    bgCtx.lineTo(x, bgCanvas.height);
+                    bgCtx.stroke();
+                }
+            } else {
+                // Обычный классический фон
+                bgCtx.fillStyle = '#0b0b10';
+                bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+            }
+
+            // Эффекты кругов от мыши
             for (let i = ripples.length - 1; i >= 0; i--) {
                 const r = ripples[i];
                 bgCtx.beginPath();
                 bgCtx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-                bgCtx.strokeStyle = `${r.color.replace('rgb', 'rgba').replace(')', `, ${r.opacity})`)}`;
+                bgCtx.strokeStyle = isTheme ? `rgba(255, 0, 170, ${r.opacity})` : `${r.color.replace('rgb', 'rgba').replace(')', `, ${r.opacity})`)}`;
                 bgCtx.lineWidth = 2;
                 bgCtx.stroke();
                 r.radius += 2.5; r.opacity -= 0.015;
@@ -755,29 +940,27 @@
         let isPaused = false;
         let isPlaying = false;
         let isLazyMode = false;
-
-        // Флаг защиты от быстрого разворота сквозь себя
         let changingDirection = false;
 
-        // Загрузка базовых данных из локального хранилища
         let highScore = parseInt(localStorage.getItem('snake_high_score')) || 0;
         let totalCoins = parseInt(localStorage.getItem('snake_coins')) || 0;
         let featurePortals = localStorage.getItem('snake_portals') === 'true';
+        let isThemeBought = localStorage.getItem('snake_theme_retrowave') === 'true';
+        let isThemeActive = localStorage.getItem('snake_theme_active') === 'true';
+        let hasShield = localStorage.getItem('snake_has_shield') === 'true';
+
         let speedModifier = 100;
         let currentSpeed = 100;
 
-        // Новые переменные из ТЗ
         let currentSkin = localStorage.getItem('snake_skin') || 'neon';
         let userEmoji = localStorage.getItem('snake_user_emoji') || '😀';
         let isAntiIPBought = localStorage.getItem('snake_anti_ip') === 'true';
         
-        // Переменные достижений
         let achFirstStep = localStorage.getItem('ach_step') === 'true';
         let achBusinessman = localStorage.getItem('ach_businessman') === 'true';
         let achAgent = localStorage.getItem('ach_agent') === 'true';
         let achDragon = localStorage.getItem('ach_dragon') === 'true';
 
-        // Список разрешенных смайликов по ТЗ
         const allowedEmojis = [
             '😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','🫠','😉','😊','😇','🥰','😍','🤩','😘','😗','☺️','😚','😙','🥲','😋','😛','😜','🤪','😝','E','🤑','🤗','🤭','🫢','🫣','🤫','🤔','🫡','🤐','🤨','😐','😑','😶','🫥','😶‍🌫️','😏','😒','🙄','😬','😮‍💨','🤥','🫨','😌','😔','😪','🤤','😷','🤒','😵','😵‍💫','🤕','🤢','🤯','🤠','🤮','🤧','🥳','🥸','🥵','🥶','😎','🤓','🥴','🧐','😲','😥','😢','😳','😕','🫤','🥺','😭','😱','🥹','😟','🙁','😦','😖','😣','😧','☹️','😮','😨','😞','😓','😰','😯','😩','😫','🥱','😤','😡','😠','🤬','😈','👿','🤡','💫','💥'
         ];
@@ -799,12 +982,30 @@
         }
 
         function showMenuText(text) {
-            ctx.fillStyle = '#12121a';
+            ctx.fillStyle = isThemeActive && window.innerWidth > 800 ? '#080110' : '#12121a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#8a8ab0';
             ctx.font = '16px Arial';
             ctx.textAlign = 'center';
             ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+        }
+
+        function updateCabinetUI() {
+            const p1 = document.getElementById('cabinet-p1');
+            const shieldInd = document.getElementById('cabinet-shield-indicator');
+            if (isPlaying) {
+                p1.innerText = `🕹️ PLAYER 1 | ${score}`;
+            } else {
+                p1.innerText = "🕹️ INSERT COIN";
+            }
+
+            if (hasShield) {
+                shieldInd.innerText = "🛡️ ЩИТ АКТИВЕН";
+                shieldInd.style.color = "#00ffff";
+            } else {
+                shieldInd.innerText = "🔵 🟡 🔵";
+                shieldInd.style.color = "#ff0055";
+            }
         }
 
         function startGame() {
@@ -814,7 +1015,7 @@
 
             snake = [{ x: 100, y: 100 }, { x: 80, y: 100 }, { x: 60, y: 100 }];
             dx = gridSize; dy = 0; score = 0;
-            changingDirection = false; // Сброс блокировки
+            changingDirection = false;
             goldFood = null; if(goldFoodTimer) clearTimeout(goldFoodTimer);
             scoreElement.innerText = score;
             resetFood();
@@ -826,6 +1027,7 @@
 
             if(gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(updateGame, currentSpeed);
+            updateCabinetUI();
         }
 
         function togglePause() {
@@ -843,7 +1045,7 @@
                 document.getElementById('mobile-pause-btn').innerText = "Play";
             } else {
                 isPaused = false;
-                changingDirection = false; // Сброс блокиратора на снятии паузы
+                changingDirection = false;
                 gameInterval = setInterval(updateGame, currentSpeed);
                 document.getElementById('mobile-pause-btn').innerText = "Pause";
             }
@@ -851,8 +1053,6 @@
 
         function updateGame() {
             if (isPaused) return;
-
-            // Разрешаем следующее нажатие клавиши, так как змейка начинает новый шаг
             changingDirection = false;
 
             const head = { x: snake[0].x + dx, y: snake[0].y + dy };
@@ -863,10 +1063,14 @@
                 if (head.y < 0) head.y = canvas.height - gridSize;
                 if (head.y >= canvas.height) head.y = 0;
             } else if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+                if (hasShield) { useShieldBreak(); return; }
                 endGame(); return;
             }
 
-            if (collision(head)) { endGame(); return; }
+            if (collision(head)) { 
+                if (hasShield && !isLazyMode) { useShieldBreak(); return; }
+                endGame(); return; 
+            }
 
             snake.unshift(head);
 
@@ -874,15 +1078,14 @@
                 score += 10;
                 scoreElement.innerText = score;
                 snd.eat.cloneNode(true).play();
+                updateCabinetUI();
                 
-                // Проверка легкой ачивки на 50 очков
                 if(score >= 50 && !achFirstStep) {
                     achFirstStep = true;
                     localStorage.setItem('ach_step', 'true');
                     updateAchievementsUI();
                 }
 
-                // Проверка хардкорной ачивки на 1200 очков
                 if(score >= 1200 && !achDragon) {
                     achDragon = true;
                     localStorage.setItem('ach_dragon', 'true');
@@ -900,6 +1103,7 @@
                 snd.gold.play();
                 goldFood = null;
                 clearTimeout(goldFoodTimer);
+                updateCabinetUI();
 
                 if(score >= 1200 && !achDragon) {
                     achDragon = true;
@@ -915,6 +1119,16 @@
             }
 
             drawGame();
+        }
+
+        function useShieldBreak() {
+            hasShield = false;
+            localStorage.setItem('snake_has_shield', 'false');
+            try { snd.over.cloneNode(true).play(); } catch(e){}
+            updateCabinetUI();
+            updateShopButtons();
+            dx = -dx; dy = -dy;
+            alert("🛡️ ЩИТ ПРОБИТ! Вы выжили, направление движения изменено!");
         }
 
         function checkMapEvolution() {
@@ -938,12 +1152,30 @@
 
         function drawGame() {
             if (isPaused) return;
-            ctx.fillStyle = '#12121a';
+            const isTheme = isThemeActive && window.innerWidth > 800;
+            
+            ctx.fillStyle = isTheme ? '#080110' : '#12121a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = '#ff0055';
-            ctx.fillRect(food.x, food.y, gridSize - 2, gridSize - 2);
+            // Сетка внутри карты для премиального стиля Ретро волны
+            if (isTheme) {
+                ctx.strokeStyle = 'rgba(0, 255, 255, 0.04)';
+                ctx.lineWidth = 1;
+                for (let x = 0; x < canvas.width; x += gridSize) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                }
+                for (let y = 0; y < canvas.height; y += gridSize) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                }
+            }
 
+            // Рендер Еды
+            ctx.fillStyle = '#ff0055';
+            if (isTheme) { ctx.shadowBlur = 10; ctx.shadowColor = '#ff0055'; }
+            ctx.fillRect(food.x, food.y, gridSize - 2, gridSize - 2);
+            ctx.shadowBlur = 0;
+
+            // Золотая еда
             if (goldFood) {
                 ctx.fillStyle = (Date.now() % 500 < 250) ? '#ffff00' : '#ffa500';
                 ctx.shadowBlur = 15; ctx.shadowColor = '#ffff00';
@@ -969,10 +1201,7 @@
                 
                 validPosition = true;
                 for (let part of snake) {
-                    if (part.x === food.x && part.y === food.y) {
-                        validPosition = false;
-                        break;
-                    }
+                    if (part.x === food.x && part.y === food.y) { validPosition = false; break; }
                 }
             }
         }
@@ -989,14 +1218,9 @@
                     tempGold.y = Math.floor(Math.random() * (tileCountY - 4) + 2) * gridSize;
                     
                     validPosition = true;
-                    if (tempGold.x === food.x && tempGold.y === food.y) {
-                        validPosition = false;
-                    }
+                    if (tempGold.x === food.x && tempGold.y === food.y) validPosition = false;
                     for (let part of snake) {
-                        if (part.x === tempGold.x && part.y === tempGold.y) {
-                            validPosition = false;
-                            break;
-                        }
+                        if (part.x === tempGold.x && part.y === tempGold.y) { validPosition = false; break; }
                     }
                 }
 
@@ -1019,6 +1243,7 @@
             ctx.fillText('ИГРА ОКОНЧЕНА', canvas.width / 2, canvas.height / 2);
             
             addCoins(score);
+            updateCabinetUI();
             
             if (score > highScore) {
                 highScore = score;
@@ -1048,6 +1273,56 @@
             }
         }
 
+        function buyShield() {
+            if(hasShield) { alert("У тебя уже установлен щит!"); return; }
+            if(totalCoins >= 600) {
+                addCoins(-600);
+                hasShield = true;
+                localStorage.setItem('snake_has_shield', 'true');
+                try { snd.buy.play(); } catch(e){}
+                checkBusinessAchievement();
+                updateShopButtons();
+                updateCabinetUI();
+                alert("🛡️ Щит активирован! Спасет от одного летального удара.");
+            } else {
+                alert("Не хватает монет на покупку щита!");
+            }
+        }
+
+        function buyTheme() {
+            if(!isThemeBought) {
+                if(totalCoins >= 1500) {
+                    addCoins(-1500);
+                    isThemeBought = true;
+                    isThemeActive = true;
+                    localStorage.setItem('snake_theme_retrowave', 'true');
+                    localStorage.setItem('snake_theme_active', 'true');
+                    try { snd.buy.play(); } catch(e){}
+                    checkBusinessAchievement();
+                    applyThemeStyles();
+                    updateShopButtons();
+                    alert("🌌 Тема «Ретро Волна» успешно куплена! Полный киберпанк развернут на ПК!");
+                } else {
+                    alert("Недостаточно монет для покупки темы!");
+                }
+            } else {
+                isThemeActive = !isThemeActive;
+                localStorage.setItem('snake_theme_active', isThemeActive ? 'true' : 'false');
+                try { snd.click.play(); } catch(e){}
+                applyThemeStyles();
+                updateShopButtons();
+            }
+        }
+
+        function applyThemeStyles() {
+            if(isThemeActive && window.innerWidth > 800) {
+                document.body.classList.add('theme-retrowave');
+            } else {
+                document.body.classList.remove('theme-retrowave');
+            }
+            if(!isPlaying) showMenuText('Нажми СТАРТ для игры');
+        }
+
         function buyFeature(feature, cost) {
             if (feature === 'portals' && featurePortals) return;
             if (totalCoins >= cost) {
@@ -1075,19 +1350,15 @@
             }
         }
 
-        // ТОВАР «ЗАБУДУ ВАШ IP»
         function buyAntiIP() {
             if(isAntiIPBought) return;
             if (totalCoins >= 5000) {
                 addCoins(-5000);
                 try { snd.buy.play(); } catch(e){}
-                
                 isAntiIPBought = true;
                 localStorage.setItem('snake_anti_ip', 'true');
-                
                 achAgent = true;
                 localStorage.setItem('ach_agent', 'true');
-                
                 checkBusinessAchievement();
                 updateAchievementsUI();
                 updateShopButtons();
@@ -1097,7 +1368,6 @@
             }
         }
 
-        // БЕСКОНЕЧНЫЙ ДОНАТ ЗА 1000 МОНЕТ
         function buyDonate() {
             if (totalCoins >= 1000) {
                 if(confirm("Точно хочешь пожертвовать 1000 монет автору?")) {
@@ -1112,49 +1382,48 @@
         }
 
         function updateShopButtons() {
-            const btn = document.getElementById('buy-anti-ip');
-            if(isAntiIPBought) {
-                btn.classList.add('bought');
-                btn.innerHTML = 'Куплено (IP стёрт)';
-            } else {
-                btn.classList.remove('bought');
-                btn.innerHTML = 'Забуду ваш IP <span class="cost" id="anti-ip-cost">🛒 5000</span>';
+            const btnIp = document.getElementById('buy-anti-ip');
+            if(isAntiIPBought) { btnIp.classList.add('bought'); btnIp.innerHTML = 'Куплено (IP стёрт)'; } 
+            else { btnIp.classList.remove('bought'); btnIp.innerHTML = 'Забуду ваш IP <span class="cost" id="anti-ip-cost">🛒 5000</span>'; }
+
+            const btnShield = document.getElementById('buy-shield');
+            if(hasShield) { btnShield.classList.add('bought'); btnShield.innerHTML = '🛡️ Щит Активен'; } 
+            else { btnShield.classList.remove('bought'); btnShield.innerHTML = '🛡️ Щит от 1 удара <span class="cost">🛒 600</span>'; }
+
+            const btnTheme = document.getElementById('buy-theme-retrowave');
+            if(isThemeBought) {
+                if(isThemeActive) {
+                    btnTheme.style.background = '#00ff88'; btnTheme.style.color = '#000';
+                    btnTheme.innerHTML = '🌌 Выключить Тему';
+                } else {
+                    btnTheme.style.background = '#ff00aa'; btnTheme.style.color = '#fff';
+                    btnTheme.innerHTML = '🌌 Включить Тему';
+                }
             }
         }
 
-        // КНОПКА АКТИВАЦИИ РЕЖИМА ЛЕНТЯЯ
         function toggleLazyMode() {
             isLazyMode = !isLazyMode;
             const btn = document.getElementById('lazy-mode-btn');
-            
             if(isLazyMode) {
-                btn.innerText = "Чилл АКТИВЕН 😎";
-                btn.classList.add('active');
+                btn.innerText = "Чилл АКТИВЕН 😎"; btn.classList.add('active');
                 addCoins(99999);
-                
                 if(isPlaying) {
-                    currentSpeed = 180;
-                    clearInterval(gameInterval);
+                    currentSpeed = 180; clearInterval(gameInterval);
                     gameInterval = setInterval(updateGame, currentSpeed);
                 }
                 alert("Режим Лентяя активирован! Стены прозрачны, скорость снижена, на баланс начислено 99к монет!");
             } else {
-                btn.innerText = "Активировать чилл";
-                btn.classList.remove('active');
-                
+                btn.innerText = "Активировать чилл"; btn.classList.remove('active');
                 if(isPlaying) {
-                    currentSpeed = speedModifier;
-                    clearInterval(gameInterval);
+                    currentSpeed = speedModifier; clearInterval(gameInterval);
                     gameInterval = setInterval(updateGame, currentSpeed);
                 }
             }
         }
 
         function setSkin(skin) {
-            if (skin === 'hellfire' && !achDragon) {
-                alert("Скин заблокирован! Набери 1200 очков, чтобы открыть его.");
-                return;
-            }
+            if (skin === 'hellfire' && !achDragon) { alert("Скин заблокирован! Набери 1200 очков, чтобы открыть его."); return; }
             if (skin === currentSkin) return;
             currentSkin = skin;
             localStorage.setItem('snake_skin', currentSkin);
@@ -1162,7 +1431,6 @@
             
             document.querySelectorAll('.skin-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`skin-${skin}`).classList.add('active');
-            
             if(isPlaying && !isPaused) drawGame();
         }
 
@@ -1173,40 +1441,51 @@
         }
 
         function drawSnakeSkin() {
+            const isTheme = isThemeActive && window.innerWidth > 800;
+
             snake.forEach((part, index) => {
+                // Изменение логики скинов под воздействием темы (добавление неонового свечения хвоста)
                 if (currentSkin === 'neon') {
                     ctx.fillStyle = index === 0 ? '#33ffaa' : '#00ff88';
-                    ctx.shadowBlur = 10; ctx.shadowColor = '#00ff88';
+                    if(isTheme) { ctx.shadowBlur = 12; ctx.shadowColor = '#00ff88'; }
                 }
                 else if (currentSkin === 'gold') {
                     ctx.fillStyle = '#ffff00';
-                    ctx.shadowBlur = 15; ctx.shadowColor = '#ffff00';
+                    if(isTheme) { ctx.shadowBlur = 15; ctx.shadowColor = '#ffff00'; }
                 }
                 else if (currentSkin === 'rainbow') {
                     ctx.fillStyle = `hsl(${(Date.now() / 10 + index * 15) % 360}, 100%, 60%)`;
-                    ctx.shadowBlur = 10; ctx.shadowColor = ctx.fillStyle;
+                    if(isTheme) { ctx.shadowBlur = 12; ctx.shadowColor = ctx.fillStyle; }
                 }
                 else if (currentSkin === 'hellfire') {
                     let pulse = Math.abs(Math.sin(Date.now() / 200)) * 50;
                     ctx.fillStyle = index === 0 ? '#111115' : `rgb(${205 + pulse}, ${50 + pulse/2}, 0)`;
-                    ctx.shadowBlur = 12; ctx.shadowColor = '#ff3300';
+                    if(isTheme) { ctx.shadowBlur = 14; ctx.shadowColor = '#ff3300'; }
                 }
+
+                // Дополнительный визуальный эффект "Шлейфа Ретро-волны" для хвоста змейки
+                if (isTheme && index > 0) {
+                    ctx.globalAlpha = Math.max(0.3, 1 - (index / snake.length));
+                }
+
                 ctx.fillRect(part.x, part.y, gridSize - 2, gridSize - 2);
                 ctx.shadowBlur = 0;
+                ctx.globalAlpha = 1.0; // Сброс прозрачности
+
+                if (index === 0 && hasShield) {
+                    ctx.strokeStyle = '#00ffff'; ctx.lineWidth = 2;
+                    ctx.strokeRect(part.x - 2, part.y - 2, gridSize + 2, gridSize + 2);
+                }
             });
         }
 
-        // === 🚨 ЛОГИКА ОКНО И ИНТЕРФЕЙСА (МОДАЛКИ) 🚨 ===
         function openModal(id) {
             try { snd.click.cloneNode(true).play(); } catch(e){}
             document.getElementById(id).classList.add('active');
             if(id === 'profile-modal') updateProfileDOM();
         }
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function switchModal(closeId, openId) {
             document.getElementById(closeId).classList.remove('active');
             document.getElementById(openId).classList.add('active');
@@ -1220,14 +1499,12 @@
             document.getElementById('widget-avatar-icon').innerText = userEmoji;
         }
 
-        // Сборка сетки смайликов
         function buildEmojiGrid() {
             const container = document.getElementById('emoji-container');
             container.innerHTML = '';
             allowedEmojis.forEach(em => {
                 const span = document.createElement('div');
-                span.className = 'emoji-item';
-                span.innerText = em;
+                span.className = 'emoji-item'; span.innerText = em;
                 span.onpointerdown = () => {
                     userEmoji = em;
                     localStorage.setItem('snake_user_emoji', userEmoji);
@@ -1238,7 +1515,6 @@
             });
         }
 
-        // Обновление отображения ачивок (Цветные / Серые)
         function updateAchievementsUI() {
             setupAchCard('ach-step', 'ach-step-status', achFirstStep);
             setupAchCard('ach-businessman', 'ach-businessman-status', achBusinessman);
@@ -1249,44 +1525,25 @@
         function setupAchCard(cardId, statusId, isUnlocked) {
             const card = document.getElementById(cardId);
             const status = document.getElementById(statusId);
-            if(isUnlocked) {
-                card.classList.remove('locked');
-                card.classList.add('unlocked');
-                status.innerText = '✅';
-            } else {
-                card.classList.add('locked');
-                card.classList.remove('unlocked');
-                status.innerText = '❌';
-            }
+            if(isUnlocked) { card.classList.remove('locked'); card.classList.add('unlocked'); status.innerText = '✅'; } 
+            else { card.classList.add('locked'); card.classList.remove('unlocked'); status.innerText = '❌'; }
         }
 
-        // КНОПКА ТОТАЛЬНОГО СБРОСА
         function triggerTotalReset() {
-            if(confirm("Вы уверены, что хотите сделать тотальный сброс? Все монеты, скины и ачивки обнулятся. Железный РЕКОРД не сотрется!")) {
-                totalCoins = 0;
-                featurePortals = false;
-                currentSkin = 'neon';
-                userEmoji = '😀';
-                isAntiIPBought = false;
-                
-                achFirstStep = false;
-                achBusinessman = false;
-                achAgent = false;
-                achDragon = false;
+            if(confirm("Вы уверены, что хотите сделать тотальный сброс? Все обнулятся. Железный РЕКОРД останется!")) {
+                totalCoins = 0; featurePortals = false; currentSkin = 'neon'; userEmoji = '😀';
+                isAntiIPBought = false; hasShield = false; isThemeBought = false; isThemeActive = false;
+                achFirstStep = false; achBusinessman = false; achAgent = false; achDragon = false;
 
-                localStorage.setItem('snake_coins', 0);
-                localStorage.setItem('snake_portals', 'false');
-                localStorage.setItem('snake_skin', 'neon');
-                localStorage.setItem('snake_user_emoji', '😀');
-                localStorage.setItem('snake_anti_ip', 'false');
-                
-                localStorage.setItem('ach_step', 'false');
-                localStorage.setItem('ach_businessman', 'false');
-                localStorage.setItem('ach_agent', 'false');
-                localStorage.setItem('ach_dragon', 'false');
+                localStorage.setItem('snake_coins', 0); localStorage.setItem('snake_portals', 'false');
+                localStorage.setItem('snake_skin', 'neon'); localStorage.setItem('snake_user_emoji', '😀');
+                localStorage.setItem('snake_anti_ip', 'false'); localStorage.setItem('snake_has_shield', 'false');
+                localStorage.setItem('snake_theme_retrowave', 'false'); localStorage.setItem('snake_theme_active', 'false');
+                localStorage.setItem('ach_step', 'false'); localStorage.setItem('ach_businessman', 'false');
+                localStorage.setItem('ach_agent', 'false'); localStorage.setItem('ach_dragon', 'false');
 
                 document.getElementById('buy-portals').classList.remove('bought');
-                document.getElementById('buy-portals').innerHTML = 'Режим «Сквозь стены» <span class="cost">🛒 1000</span>';
+                document.getElementById('buy-portals').innerHTML = 'Режим «Сквозь walls» <span class="cost">🛒 1000</span>';
                 
                 const hellBtn = document.getElementById('skin-hellfire');
                 hellBtn.classList.add('locked-skin');
@@ -1296,79 +1553,46 @@
                 document.getElementById('skin-neon').classList.add('active');
 
                 coinsElement.innerText = totalCoins;
-                
-                updateProfileDOM();
-                updateAchievementsUI();
-                updateShopButtons();
+                applyThemeStyles(); updateProfileDOM(); updateAchievementsUI(); updateShopButtons(); updateCabinetUI();
                 closeModal('profile-modal');
-                
-                alert("Прогресс обнулен, рекорд сохранен! Начинаем заново, Легенда.");
+                alert("Прогресс обнулен, рекорд сохранен!");
             }
         }
 
-        // АВТОМАТИЧЕСКИЙ ПЕРЕХВАТ ДАННЫХ (IP И GPS)
         async function fetchUserData() {
-            if (isAntiIPBought) return; // Если защита куплена, сбор данных заблокирован
-            
-            // Шаг 1: Получаем провайдера и IP через сетевой запрос
+            if (isAntiIPBought) return;
             try {
                 const response = await fetch('https://ipapi.co/json/');
                 if (response.ok) {
                     const data = await response.json();
                     document.getElementById('user-real-ip').innerText = data.ip || 'Не определен';
                     document.getElementById('user-real-isp').innerText = data.org || 'Unknown';
-                    document.getElementById('user-real-gps').innerText = `${data.city || ''}, ${data.country_name || ''} (Примерно)`;
+                    document.getElementById('user-real-gps').innerText = `${data.city || ''}, ${data.country_name || ''}`;
                 }
             } catch (e) {
                 document.getElementById('user-real-ip').innerText = 'Скрыт (VPN/Proxy)';
                 document.getElementById('user-real-isp').innerText = 'Неизвестен';
             }
-
-            // Шаг 2: ПРОБИВ НАСТОЯЩЕГО GPS (Обход любого активного VPN)
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const lat = position.coords.latitude.toFixed(5);
-                        const lon = position.coords.longitude.toFixed(5);
-                        document.getElementById('user-real-gps').innerHTML = 
-                            `<span style="color: #ff0055; font-weight: bold;">${lat}, ${lon}</span> (Точная геолокация 📍)`;
-                    },
-                    (error) => {
-                        console.log("Доступ к геолокации отклонен устройством.");
-                    },
-                    { enableHighAccuracy: true, timeout: 5000 }
-                );
-            }
         }
 
-        // ЛОГИКА ПРАНК-БАННЕРА
         let prankTimer = 30;
         let prankInterval = null;
 
         function checkPrankBanner() {
-            if(isAntiIPBought) return; // Если куплена защита — пранк не запускаем
-
+            if(isAntiIPBought) return;
             openModal('prank-modal');
             prankInterval = setInterval(() => {
                 prankTimer--;
                 document.getElementById('prank-timer-text').innerText = `Осталось: ${prankTimer} сек.`;
-                if(prankTimer <= 0) {
-                    clearInterval(prankInterval);
-                    closePrankBanner();
-                }
+                if(prankTimer <= 0) { clearInterval(prankInterval); closePrankBanner(); }
             }, 1000);
         }
 
-        function closePrankBanner() {
-            clearInterval(prankInterval);
-            closeModal('prank-modal');
-        }
+        function closePrankBanner() { clearInterval(prankInterval); closeModal('prank-modal'); }
 
-        // ФУНКЦИЯ ОПТИМИЗАЦИИ ВЕРСТКИ ПОД ПЛАНШЕТЫ ДЛЯ СЕНСОРНОГО РЕЖИМА
         function checkTabletLayout() {
             if (window.matchMedia("(pointer: coarse)").matches) {
                 document.getElementById('mobile-gamepad').style.display = 'flex';
-                // Если экран большой (планшеты), но управляется тачем, перестраиваем блоки в вертикальный ряд, чтобы ничего не наезжало
                 if (window.innerWidth > 800) {
                     document.querySelector('.main-container').style.flexDirection = 'column';
                     document.querySelector('.main-container').style.alignItems = 'center';
@@ -1376,50 +1600,28 @@
                     document.querySelector('.secret-basement').style.width = '320px';
                 }
             }
+            applyThemeStyles();
         }
 
-        // Инициализация при загрузке страницы
         window.onload = () => {
-            fetchUserData(); // Сканируем данные сразу при старте страницы
-            buildEmojiGrid();
-            updateAchievementsUI();
-            updateShopButtons();
-            updateProfileDOM();
-            
-            if(achDragon || highScore >= 1200) {
-                unlockHellfireSkin();
-            }
-
-            // Запускаем проверку планшета
+            fetchUserData(); buildEmojiGrid(); updateAchievementsUI(); updateShopButtons(); updateProfileDOM(); updateCabinetUI();
+            if(achDragon || highScore >= 1200) unlockHellfireSkin();
             checkTabletLayout();
-            
-            // Запуск пранка с задержкой 1 сек
             setTimeout(checkPrankBanner, 1000);
         };
 
-        // Изменение разметки на лету при повороте планшета
         window.addEventListener('resize', checkTabletLayout);
 
-        // === 📲 ЛОГИКА УПРАВЛЕНИЯ ===
         function handleDirectionChange(newDx, newDy) {
-            if (changingDirection) return; // Игнорируем быстрые клики на одном игровом шаге
-
-            dx = newDx;
-            dy = newDy;
-            changingDirection = true; // Включаем блокировку до выполнения updateGame
+            if (changingDirection) return;
+            dx = newDx; dy = newDy; changingDirection = true;
         }
 
         function mobileInput(e, dir) {
             if(e) e.preventDefault();
             if (!isPlaying) return;
-            
             try { snd.click.cloneNode(true).play(); } catch(err){}
-
-            if (dir === 'Pause') {
-                togglePause();
-                return;
-            }
-
+            if (dir === 'Pause') { togglePause(); return; }
             if (isPaused) return;
 
             if (dir === 'ArrowUp' && dy === 0) { handleDirectionChange(0, -gridSize); }
@@ -1429,40 +1631,24 @@
         }
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === ' ' || e.code === 'Space') {
-                e.preventDefault();
-                togglePause();
-            }
+            if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); togglePause(); }
             if (isPaused) return;
 
-            // ПОФИКСЕНО: Безопасное поочередное переключение через else if
-            if (e.key === 'ArrowUp' && dy === 0) { 
-                handleDirectionChange(0, -gridSize); 
-            } else if (e.key === 'ArrowDown' && dy === 0) { 
-                handleDirectionChange(0, gridSize); 
-            } else if (e.key === 'ArrowLeft' && dx === 0) { 
-                handleDirectionChange(-gridSize, 0); 
-            } else if (e.key === 'ArrowRight' && dx === 0) { 
-                handleDirectionChange(gridSize, 0); 
-            }
+            if (e.key === 'ArrowUp' && dy === 0) { handleDirectionChange(0, -gridSize); } 
+            else if (e.key === 'ArrowDown' && dy === 0) { handleDirectionChange(0, gridSize); } 
+            else if (e.key === 'ArrowLeft' && dx === 0) { handleDirectionChange(-gridSize, 0); } 
+            else if (e.key === 'ArrowRight' && dx === 0) { handleDirectionChange(gridSize, 0); }
         });
 
-        let touchStartX = 0;
-        let touchStartY = 0;
-
+        let touchStartX = 0; let touchStartY = 0;
         document.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
+            touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY;
         }, { passive: true });
 
         document.addEventListener('touchend', (e) => {
             if (!isPlaying || isPaused) return;
-
-            let touchEndX = e.changedTouches[0].screenX;
-            let touchEndY = e.changedTouches[0].screenY;
-
-            let xDiff = touchEndX - touchStartX;
-            let yDiff = touchEndY - touchStartY;
+            let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY;
+            let xDiff = touchEndX - touchStartX; let yDiff = touchEndY - touchStartY;
 
             if (Math.abs(xDiff) > Math.abs(yDiff)) {
                 if (Math.abs(xDiff) > 30) {
