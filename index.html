@@ -152,6 +152,101 @@
             text-align: center;
         }
 
+        /* === 🔄 ОБЕРТКА АВТОМАТА И СТРЕЛОК ПОВОРОТА === */
+        .cabinet-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1200px;
+            width: 100%;
+        }
+
+        .rotate-arrow-btn {
+            position: absolute;
+            background: rgba(18, 18, 26, 0.9);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            font-size: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 60;
+            box-shadow: 0 0 18px rgba(0, 255, 255, 0.4);
+            transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .rotate-arrow-btn:hover {
+            background: #00ffff;
+            color: #0b0b10;
+            box-shadow: 0 0 25px #00ffff;
+        }
+
+        .rotate-arrow-left {
+            top: 50%;
+            left: -24px;
+            transform: translateY(-50%);
+        }
+        .rotate-arrow-left:hover {
+            transform: translateY(-50%) scale(1.12);
+        }
+        .rotate-arrow-left:active {
+            transform: translateY(-50%) scale(0.92);
+        }
+
+        .rotate-arrow-right {
+            top: 50%;
+            right: -24px;
+            transform: translateY(-50%);
+        }
+        .rotate-arrow-right:hover {
+            transform: translateY(-50%) scale(1.12);
+        }
+        .rotate-arrow-right:active {
+            transform: translateY(-50%) scale(0.92);
+        }
+
+        .rotate-arrow-up {
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .rotate-arrow-up:hover {
+            transform: translateX(-50%) scale(1.12);
+        }
+        .rotate-arrow-up:active {
+            transform: translateX(-50%) scale(0.92);
+        }
+
+        .rotate-arrow-down {
+            bottom: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .rotate-arrow-down:hover {
+            transform: translateX(-50%) scale(1.12);
+        }
+        .rotate-arrow-down:active {
+            transform: translateX(-50%) scale(0.92);
+        }
+
+        body.theme-retrowave .rotate-arrow-btn {
+            border-color: #ff00aa;
+            color: #ff00aa;
+            box-shadow: 0 0 18px rgba(255, 0, 170, 0.5);
+        }
+        body.theme-retrowave .rotate-arrow-btn:hover {
+            background: #ff00aa;
+            color: #fff;
+            box-shadow: 0 0 25px #ff00aa;
+        }
+
         /* === 🕹️ КОРПУС ИГРОВОГО АВТОМАТА === */
         .arcade-cabinet {
             display: flex;
@@ -164,14 +259,22 @@
             padding: 25px;
             position: relative;
             background-image: linear-gradient(135deg, #101018 25%, #181824 100%);
-            transition: border-color 0.5s, box-shadow 0.5s;
+            transition: border-color 0.5s, box-shadow 0.5s, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
             box-sizing: border-box;
             max-width: 100%;
+            transform-style: preserve-3d;
         }
         body.theme-retrowave .arcade-cabinet {
             border-color: #ff00aa;
             box-shadow: 0 0 60px rgba(255, 0, 170, 0.5), inset 0 0 40px rgba(0,0,0,0.9);
             background-image: linear-gradient(135deg, #12021c 25%, #240538 100%);
+        }
+
+        .arcade-cabinet.mode-3d {
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.85), 0 0 40px rgba(0, 255, 255, 0.4);
+        }
+        body.theme-retrowave .arcade-cabinet.mode-3d {
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.85), 0 0 50px rgba(255, 0, 170, 0.5);
         }
 
         /* Переливающаяся верхняя вывеска автомата */
@@ -185,7 +288,7 @@
             font-size: 24px;
             padding: 12px 0;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 6px;
             position: relative;
@@ -206,6 +309,64 @@
         @keyframes marqueeShimmer {
             0% { background-position: 0% center; }
             100% { background-position: 200% center; }
+        }
+
+        /* ПАНЕЛЬ ПЕРЕКЛЮЧЕНИЯ 2D / 3D РЕЖИМА */
+        .mode-toggle-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 12px;
+            background: #111119;
+            border: 1px solid #333348;
+            border-radius: 8px;
+            padding: 6px 10px;
+            box-sizing: border-box;
+        }
+        .mode-toggle-label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #8a8ab0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .mode-switch-btn {
+            background: #1e1e2c;
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            font-weight: bold;
+            font-size: 11px;
+            letter-spacing: 1px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            outline: none;
+        }
+        .mode-switch-btn:hover {
+            background: #00ffff;
+            color: #000;
+            box-shadow: 0 0 12px #00ffff;
+        }
+        .mode-switch-btn.active-3d {
+            border-color: #ff0055;
+            color: #ff0055;
+        }
+        .mode-switch-btn.active-3d:hover {
+            background: #ff0055;
+            color: #fff;
+            box-shadow: 0 0 12px #ff0055;
+        }
+        body.theme-retrowave .mode-switch-btn {
+            border-color: #ff00aa;
+            color: #ff00aa;
+        }
+        body.theme-retrowave .mode-switch-btn:hover {
+            background: #ff00aa;
+            color: #fff;
+            box-shadow: 0 0 12px #ff00aa;
         }
 
         /* Панель управления снизу автомата */
@@ -245,7 +406,7 @@
             box-shadow: 0 0 35px rgba(0, 255, 255, 0.5);
         }
 
-        /* АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ — БЕЗ СЛОМА ДИЗАЙНА */
+        /* АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ */
         @media (max-width: 800px) {
             .arcade-cabinet {
                 border-width: 6px !important;
@@ -263,6 +424,15 @@
                 margin-top: 10px !important;
                 font-size: 10px !important;
             }
+            .rotate-arrow-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+            .rotate-arrow-left { left: -10px; }
+            .rotate-arrow-right { right: -10px; }
+            .rotate-arrow-up { top: -12px; }
+            .rotate-arrow-down { bottom: -12px; }
         }
 
         .start-btn {
@@ -477,6 +647,7 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(5, 5, 10, 0.85);
+            backdrop-filter: blur(5px);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -664,16 +835,37 @@
             <div class="author-tag">EVOLUTION MAPS</div>
             <p class="info-p">Счёт: <span id="score">0</span> | Рекорд: <span id="high-score">0</span><br>Поле: <span id="map-level" style="color: #00ffff; font-weight: bold;">Малое</span></p>
 
-            <!-- КОРПУС АВТОМАТА (ТЕПЕРЬ НЕ ИСЧЕЗАЕТ) -->
-            <div class="arcade-cabinet">
-                <div class="arcade-marquee">★ ЗМЕЙКА ★</div>
-                
-                <canvas id="game-board" width="300" height="300"></canvas>
-                
-                <div class="arcade-controls">
-                    <span style="color:#00ffff" id="cabinet-p1">🕹️ INSERT COIN</span>
-                    <span style="color:#ff0055" id="cabinet-shield-indicator">🔴 🟡 🔵</span>
+            <!-- ОБЕРТКА АВТОМАТА И 4 СТРЕЛОК ПОВОРОТА -->
+            <div class="cabinet-wrapper">
+                <!-- Стрелка наклона от себя (вверх) -->
+                <button class="rotate-arrow-btn rotate-arrow-up" id="rotate-arrow-up" onpointerdown="rotatePitch(-1)" title="Наклонить от себя">▲</button>
+
+                <!-- Стрелка поворота влево -->
+                <button class="rotate-arrow-btn rotate-arrow-left" id="rotate-arrow-left" onpointerdown="rotateYaw(-1)" title="Повернуть автомат влево">⮜</button>
+
+                <!-- КОРПУС АВТОМАТА С ПОДДЕРЖКОЙ 3D НАКЛОНА -->
+                <div class="arcade-cabinet" id="arcade-cabinet">
+                    <div class="arcade-marquee">★ ЗМЕЙКА ★</div>
+                    
+                    <!-- ПАНЕЛЬ ТУМБЛЕРА 2D / 3D -->
+                    <div class="mode-toggle-bar">
+                        <span class="mode-toggle-label">🎮 РЕЖИМ ВИДА: <span id="mode-status-text" style="color:#00ff88;">2D КЛАССИКА</span></span>
+                        <button class="mode-switch-btn" id="mode-switch-btn" onpointerdown="handleModeToggleClick()">3D РЕЖИМ</button>
+                    </div>
+
+                    <canvas id="game-board" width="300" height="300"></canvas>
+                    
+                    <div class="arcade-controls">
+                        <span style="color:#00ffff" id="cabinet-p1">🕹️ INSERT COIN</span>
+                        <span style="color:#ff0055" id="cabinet-shield-indicator">🔴 🟡 🔵</span>
+                    </div>
                 </div>
+
+                <!-- Стрелка поворота вправо -->
+                <button class="rotate-arrow-btn rotate-arrow-right" id="rotate-arrow-right" onpointerdown="rotateYaw(1)" title="Повернуть автомат вправо">⮞</button>
+
+                <!-- Стрелка наклона на себя (вниз) -->
+                <button class="rotate-arrow-btn rotate-arrow-down" id="rotate-arrow-down" onpointerdown="rotatePitch(1)" title="Наклонить на себя">▼</button>
             </div>
 
             <button class="start-btn" onpointerdown="startGame()">ЗАПУСТИТЬ КАТКУ</button>
@@ -742,7 +934,27 @@
         </div>
     </div>
 
-    <!-- МОДАЛКИ -->
+    <!-- МОДАЛКА ПРЕДУПРЕЖДЕНИЯ 3D РЕЖИМА -->
+    <div class="modal-overlay" id="confirm-3d-modal">
+        <div class="modal-window" style="border-color: #ff0055; box-shadow: 0 0 35px rgba(255, 0, 85, 0.4); text-align: center;">
+            <div class="modal-close" onpointerdown="closeModal('confirm-3d-modal')">×</div>
+            <h2 style="color: #ff0055; margin-top: 5px;">⚠️ ВКЛЮЧИТЬ 3D-РЕЖИМ?</h2>
+            <p style="color: #c0c0d8; font-size: 13px; line-height: 1.5; margin: 10px 0 20px 0;">
+                3D-режим добавляет наклон игрового автомата, тени, объемные воксельные кубы и парящие яблоки.<br><br>
+                На слабых смартфонах это может вызвать просадку FPS. Включить?
+            </p>
+            <div style="display: flex; gap: 10px; width: 100%;">
+                <button class="menu-btn" style="background: #2a2a3c; border: 1px solid #555;" onpointerdown="closeModal('confirm-3d-modal')">
+                    Остаться в 2D
+                </button>
+                <button class="menu-btn" style="background: #00ff88; color: #000; font-weight: bold;" onpointerdown="confirmEnable3D()">
+                    Врубай 3D! 🔥
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ДРУГИЕ МОДАЛКИ -->
     <div class="modal-overlay" id="profile-modal">
         <div class="modal-window">
             <div class="modal-close" onpointerdown="closeModal('profile-modal')">×</div>
@@ -849,7 +1061,6 @@
         });
 
         function drawBackground() {
-            // Тема применяется везде, но тяжелая 3D-сетка рисуется только на ПК для защиты FPS!
             const isTheme = document.body.classList.contains('theme-retrowave');
             const isPC = window.innerWidth > 800;
             
@@ -863,7 +1074,6 @@
                 bgCtx.fillStyle = gradient;
                 bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height * 0.6);
 
-                // Отрисовка 3D сетки только если это ПК
                 if (isPC) {
                     bgCtx.strokeStyle = 'rgba(255, 0, 170, 0.25)';
                     bgCtx.lineWidth = 1.5;
@@ -936,6 +1146,12 @@
         let isLazyMode = false;
         let changingDirection = false;
 
+        // 3D РЕЖИМ ПЕРЕМЕННЫЕ
+        let is3DMode = localStorage.getItem('snake_3d_mode') === 'true';
+        let currentRotateX = 22; // Начальный наклон назад
+        let currentRotateY = -12; // Начальный угол наклона влево
+        const rotStep = 10;      // Шаг поворота стрелками
+
         let highScore = parseInt(localStorage.getItem('snake_high_score')) || 0;
         let totalCoins = parseInt(localStorage.getItem('snake_coins')) || 0;
         let featurePortals = localStorage.getItem('snake_portals') === 'true';
@@ -968,7 +1184,94 @@
         }
 
         resizeBoard(300, 300);
+        apply3DModeVisuals();
         showMenuText('Нажми СТАРТ для игры');
+
+        // === 🎲 УПРАВЛЕНИЕ 3D РЕЖИМОМ И ПОВОРОТОМ ===
+        function handleModeToggleClick() {
+            try { snd.click.cloneNode(true).play(); } catch(e){}
+            if (!is3DMode) {
+                openModal('confirm-3d-modal');
+            } else {
+                set3DMode(false);
+            }
+        }
+
+        function confirmEnable3D() {
+            closeModal('confirm-3d-modal');
+            set3DMode(true);
+        }
+
+        function set3DMode(enabled) {
+            is3DMode = enabled;
+            localStorage.setItem('snake_3d_mode', is3DMode ? 'true' : 'false');
+            apply3DModeVisuals();
+            if (isPlaying && !isPaused) {
+                drawGame();
+            } else if (!isPlaying) {
+                showMenuText('Нажми СТАРТ для игры');
+            }
+        }
+
+        function rotateYaw(dir) {
+            if (!is3DMode) return;
+            try { snd.click.cloneNode(true).play(); } catch(e){}
+            currentRotateY += dir * rotStep;
+            if (currentRotateY > 30) currentRotateY = 30;
+            if (currentRotateY < -30) currentRotateY = -30;
+            applyCabinetTransform();
+        }
+
+        function rotatePitch(dir) {
+            if (!is3DMode) return;
+            try { snd.click.cloneNode(true).play(); } catch(e){}
+            currentRotateX -= dir * rotStep;
+            if (currentRotateX > 45) currentRotateX = 45;
+            if (currentRotateX < 5)  currentRotateX = 5;
+            applyCabinetTransform();
+        }
+
+        function applyCabinetTransform() {
+            const cabinet = document.getElementById('arcade-cabinet');
+            if (is3DMode) {
+                const rollZ = currentRotateY * -0.08;
+                cabinet.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg) rotateZ(${rollZ}deg)`;
+            } else {
+                cabinet.style.transform = 'none';
+            }
+        }
+
+        function apply3DModeVisuals() {
+            const cabinet = document.getElementById('arcade-cabinet');
+            const btn = document.getElementById('mode-switch-btn');
+            const statusText = document.getElementById('mode-status-text');
+            const arrows = [
+                document.getElementById('rotate-arrow-left'),
+                document.getElementById('rotate-arrow-right'),
+                document.getElementById('rotate-arrow-up'),
+                document.getElementById('rotate-arrow-down')
+            ];
+
+            if (is3DMode) {
+                cabinet.classList.add('mode-3d');
+                btn.classList.add('active-3d');
+                btn.innerText = 'ВЫКЛЮЧИТЬ 3D';
+                statusText.innerText = '3D ВОКСЕЛИ 🔥';
+                statusText.style.color = '#ff0055';
+                
+                arrows.forEach(a => { if (a) a.style.display = 'flex'; });
+                applyCabinetTransform();
+            } else {
+                cabinet.classList.remove('mode-3d');
+                btn.classList.remove('active-3d');
+                btn.innerText = '3D РЕЖИМ';
+                statusText.innerText = '2D КЛАССИКА';
+                statusText.style.color = '#00ff88';
+
+                arrows.forEach(a => { if (a) a.style.display = 'none'; });
+                cabinet.style.transform = 'none';
+            }
+        }
 
         function resizeBoard(w, h) {
             canvas.width = w;
@@ -1144,6 +1447,27 @@
             }
         }
 
+        // === 📦 ФУНКЦИЯ ОТРИСОВКИ 3D ВОКСЕЛЯ ===
+        function draw3DVoxel(x, y, size, height, topColor, frontColor, sideColor) {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+            ctx.beginPath();
+            ctx.ellipse(x + size/2 + 2, y + size/2 + 4, size * 0.45, size * 0.35, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = frontColor;
+            ctx.fillRect(x, y + size - height, size, height);
+
+            ctx.fillStyle = sideColor;
+            ctx.fillRect(x + size - 3, y - height, 3, size + height);
+
+            ctx.fillStyle = topColor;
+            ctx.fillRect(x, y - height, size, size);
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(x, y - height, size, size);
+        }
+
         function drawGame() {
             if (isPaused) return;
             const isTheme = isThemeActive;
@@ -1151,9 +1475,9 @@
             ctx.fillStyle = isTheme ? '#080110' : '#12121a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Сетка внутри карты для премиального стиля Ретро волны (отлично видна на смартфонах)
-            if (isTheme) {
-                ctx.strokeStyle = 'rgba(0, 255, 255, 0.06)';
+            // Кибер-сетка на поле
+            if (isTheme || is3DMode) {
+                ctx.strokeStyle = is3DMode ? 'rgba(0, 255, 255, 0.12)' : 'rgba(0, 255, 255, 0.06)';
                 ctx.lineWidth = 1;
                 for (let x = 0; x < canvas.width; x += gridSize) {
                     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
@@ -1163,18 +1487,42 @@
                 }
             }
 
-            // Рендер Еды
-            ctx.fillStyle = '#ff0055';
-            if (isTheme) { ctx.shadowBlur = 10; ctx.shadowColor = '#ff0055'; }
-            ctx.fillRect(food.x, food.y, gridSize - 2, gridSize - 2);
-            ctx.shadowBlur = 0;
-
-            // Золотая еда
-            if (goldFood) {
-                ctx.fillStyle = (Date.now() % 500 < 250) ? '#ffff00' : '#ffa500';
-                ctx.shadowBlur = 15; ctx.shadowColor = '#ffff00';
-                ctx.fillRect(goldFood.x, goldFood.y, gridSize - 2, gridSize - 2);
+            // === РЕНДЕР ЕДЫ (2D ИЛИ 3D) ===
+            if (!is3DMode) {
+                ctx.fillStyle = '#ff0055';
+                if (isTheme) { ctx.shadowBlur = 10; ctx.shadowColor = '#ff0055'; }
+                ctx.fillRect(food.x, food.y, gridSize - 2, gridSize - 2);
                 ctx.shadowBlur = 0;
+
+                if (goldFood) {
+                    ctx.fillStyle = (Date.now() % 500 < 250) ? '#ffff00' : '#ffa500';
+                    ctx.shadowBlur = 15; ctx.shadowColor = '#ffff00';
+                    ctx.fillRect(goldFood.x, goldFood.y, gridSize - 2, gridSize - 2);
+                    ctx.shadowBlur = 0;
+                }
+            } else {
+                const floatOffset = Math.sin(Date.now() / 250) * 3;
+                
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                ctx.beginPath();
+                ctx.ellipse(food.x + gridSize / 2, food.y + gridSize / 2 + 5, Math.max(2, 6 - floatOffset/2), 3, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.shadowBlur = 12; ctx.shadowColor = '#ff0055';
+                draw3DVoxel(food.x + 2, food.y + 2 - floatOffset, gridSize - 4, 6, '#ff3377', '#cc0044', '#990033');
+                ctx.shadowBlur = 0;
+
+                if (goldFood) {
+                    const goldFloat = Math.cos(Date.now() / 200) * 4;
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                    ctx.beginPath();
+                    ctx.ellipse(goldFood.x + gridSize / 2, goldFood.y + gridSize / 2 + 5, Math.max(2, 7 - goldFloat/2), 3, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.shadowBlur = 18; ctx.shadowColor = '#ffff00';
+                    draw3DVoxel(goldFood.x + 1, goldFood.y + 1 - goldFloat, gridSize - 2, 7, '#ffff55', '#e6b800', '#b38f00');
+                    ctx.shadowBlur = 0;
+                }
             }
 
             drawSnakeSkin();
@@ -1434,39 +1782,84 @@
             btn.innerHTML = '<div class="skin-preview" style="background:linear-gradient(0deg, #ff0000, #ffaa00);"></div> Адское Пламя';
         }
 
+        // === 🐍 ОТРИСОВКА ЗМЕЙКИ В 2D И 3D ===
         function drawSnakeSkin() {
             const isTheme = isThemeActive;
 
             snake.forEach((part, index) => {
-                if (currentSkin === 'neon') {
-                    ctx.fillStyle = index === 0 ? '#33ffaa' : '#00ff88';
-                    if(isTheme) { ctx.shadowBlur = 12; ctx.shadowColor = '#00ff88'; }
-                }
-                else if (currentSkin === 'gold') {
-                    ctx.fillStyle = '#ffff00';
-                    if(isTheme) { ctx.shadowBlur = 15; ctx.shadowColor = '#ffff00'; }
-                }
-                else if (currentSkin === 'rainbow') {
-                    ctx.fillStyle = `hsl(${(Date.now() / 10 + index * 15) % 360}, 100%, 60%)`;
-                    if(isTheme) { ctx.shadowBlur = 12; ctx.shadowColor = ctx.fillStyle; }
-                }
-                else if (currentSkin === 'hellfire') {
-                    let pulse = Math.abs(Math.sin(Date.now() / 200)) * 50;
-                    ctx.fillStyle = index === 0 ? '#111115' : `rgb(${205 + pulse}, ${50 + pulse/2}, 0)`;
-                    if(isTheme) { ctx.shadowBlur = 14; ctx.shadowColor = '#ff3300'; }
-                }
+                if (!is3DMode) {
+                    if (currentSkin === 'neon') {
+                        ctx.fillStyle = index === 0 ? '#33ffaa' : '#00ff88';
+                        if(isTheme) { ctx.shadowBlur = 12; ctx.shadowColor = '#00ff88'; }
+                    }
+                    else if (currentSkin === 'gold') {
+                        ctx.fillStyle = '#ffff00';
+                        if(isTheme) { ctx.shadowBlur = 15; ctx.shadowColor = '#ffff00'; }
+                    }
+                    else if (currentSkin === 'rainbow') {
+                        ctx.fillStyle = `hsl(${(Date.now() / 10 + index * 15) % 360}, 100%, 60%)`;
+                        if(isTheme) { ctx.shadowBlur = 12; ctx.shadowColor = ctx.fillStyle; }
+                    }
+                    else if (currentSkin === 'hellfire') {
+                        let pulse = Math.abs(Math.sin(Date.now() / 200)) * 50;
+                        ctx.fillStyle = index === 0 ? '#111115' : `rgb(${205 + pulse}, ${50 + pulse/2}, 0)`;
+                        if(isTheme) { ctx.shadowBlur = 14; ctx.shadowColor = '#ff3300'; }
+                    }
 
-                if (isTheme && index > 0) {
-                    ctx.globalAlpha = Math.max(0.3, 1 - (index / snake.length));
-                }
+                    if (isTheme && index > 0) {
+                        ctx.globalAlpha = Math.max(0.3, 1 - (index / snake.length));
+                    }
 
-                ctx.fillRect(part.x, part.y, gridSize - 2, gridSize - 2);
-                ctx.shadowBlur = 0;
-                ctx.globalAlpha = 1.0;
+                    ctx.fillRect(part.x, part.y, gridSize - 2, gridSize - 2);
+                    ctx.shadowBlur = 0;
+                    ctx.globalAlpha = 1.0;
 
-                if (index === 0 && hasShield) {
-                    ctx.strokeStyle = '#00ffff'; ctx.lineWidth = 2;
-                    ctx.strokeRect(part.x - 2, part.y - 2, gridSize + 2, gridSize + 2);
+                    if (index === 0 && hasShield) {
+                        ctx.strokeStyle = '#00ffff'; ctx.lineWidth = 2;
+                        ctx.strokeRect(part.x - 2, part.y - 2, gridSize + 2, gridSize + 2);
+                    }
+                } else {
+                    let topCol, frontCol, sideCol;
+                    const vHeight = 6;
+
+                    if (currentSkin === 'neon') {
+                        if (index === 0) {
+                            topCol = '#44ffbb'; frontCol = '#00cc77'; sideCol = '#008850';
+                        } else {
+                            topCol = '#00ff88'; frontCol = '#00b35f'; sideCol = '#00733d';
+                        }
+                        if(isTheme) { ctx.shadowBlur = 10; ctx.shadowColor = '#00ff88'; }
+                    }
+                    else if (currentSkin === 'gold') {
+                        topCol = '#ffff44'; frontCol = '#cca800'; sideCol = '#887000';
+                        if(isTheme) { ctx.shadowBlur = 12; ctx.shadowColor = '#ffff00'; }
+                    }
+                    else if (currentSkin === 'rainbow') {
+                        const hue = (Date.now() / 10 + index * 15) % 360;
+                        topCol = `hsl(${hue}, 100%, 65%)`;
+                        frontCol = `hsl(${hue}, 100%, 45%)`;
+                        sideCol = `hsl(${hue}, 100%, 30%)`;
+                        if(isTheme) { ctx.shadowBlur = 10; ctx.shadowColor = topCol; }
+                    }
+                    else if (currentSkin === 'hellfire') {
+                        let pulse = Math.abs(Math.sin(Date.now() / 200)) * 50;
+                        if (index === 0) {
+                            topCol = '#33333f'; frontCol = '#1a1a24'; sideCol = '#0d0d12';
+                        } else {
+                            topCol = `rgb(${210 + pulse}, ${60 + pulse/2}, 0)`;
+                            frontCol = `rgb(${160 + pulse/2}, 30, 0)`;
+                            sideCol = `rgb(${100}, 15, 0)`;
+                        }
+                        if(isTheme) { ctx.shadowBlur = 12; ctx.shadowColor = '#ff3300'; }
+                    }
+
+                    draw3DVoxel(part.x, part.y, gridSize - 2, vHeight, topCol, frontCol, sideCol);
+                    ctx.shadowBlur = 0;
+
+                    if (index === 0 && hasShield) {
+                        ctx.strokeStyle = '#00ffff'; ctx.lineWidth = 2;
+                        ctx.strokeRect(part.x - 2, part.y - vHeight - 2, gridSize + 2, gridSize + vHeight + 2);
+                    }
                 }
             });
         }
@@ -1526,6 +1919,7 @@
                 totalCoins = 0; featurePortals = false; currentSkin = 'neon'; userEmoji = '😀';
                 isAntiIPBought = false; hasShield = false; isThemeBought = false; isThemeActive = false;
                 achFirstStep = false; achBusinessman = false; achAgent = false; achDragon = false;
+                is3DMode = false;
 
                 localStorage.setItem('snake_coins', 0); localStorage.setItem('snake_portals', 'false');
                 localStorage.setItem('snake_skin', 'neon'); localStorage.setItem('snake_user_emoji', '😀');
@@ -1533,6 +1927,7 @@
                 localStorage.setItem('snake_theme_retrowave', 'false'); localStorage.setItem('snake_theme_active', 'false');
                 localStorage.setItem('ach_step', 'false'); localStorage.setItem('ach_businessman', 'false');
                 localStorage.setItem('ach_agent', 'false'); localStorage.setItem('ach_dragon', 'false');
+                localStorage.setItem('snake_3d_mode', 'false');
 
                 document.getElementById('buy-portals').classList.remove('bought');
                 document.getElementById('buy-portals').innerHTML = 'Режим «Сквозь walls» <span class="cost">🛒 1000</span>';
@@ -1545,6 +1940,7 @@
                 document.getElementById('skin-neon').classList.add('active');
 
                 coinsElement.innerText = totalCoins;
+                apply3DModeVisuals();
                 applyThemeStyles(); updateProfileDOM(); updateAchievementsUI(); updateShopButtons(); updateCabinetUI();
                 closeModal('profile-modal');
                 alert("Прогресс обнулен, рекорд сохранен!");
